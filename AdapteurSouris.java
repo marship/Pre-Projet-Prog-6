@@ -24,7 +24,7 @@ public class AdapteurSouris extends MouseAdapter {
         int colonne = e.getX() / vueGrille.largeurCase();
         int ligne = e.getY() / vueGrille.largeurCase();
         if(grille.contenuDeLaGrille(ligne, colonne) == 2){
-            System.out.println("La gaufre est déjà mangé !\n");
+            System.out.println("La gaufre est déjà mangée !\n");
             return;
         }
         if(grille.contenuDeLaGrille(ligne, colonne) == 1) {
