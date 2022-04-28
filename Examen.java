@@ -11,7 +11,7 @@ public class Examen implements Runnable {
 
     public void run() {
 
-        frame = new JFrame("Puissance 4");
+        frame = new JFrame("Gaufre au poison ! :D ");
         monApplication = new MonApplication();
         monApplication.demarre(frame, 6, 7);
 
