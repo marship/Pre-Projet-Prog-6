@@ -22,9 +22,14 @@ public class InterfaceGraphique implements Runnable, Observateur {
     boolean estMaximise;
     JFrame frame;
     public GaufreGraphique gaufreGraphique;
+<<<<<<< Updated upstream
     JLabel nbPas, nbPoussees, infoJoueurCourant, infoFin, scores, J1L, J2L;
     JButton annuler, refaire, nouvellePartie, suite;
     int J1, J2;
+=======
+    JLabel infoJoueurCourant, infoFin;
+    JButton annuler, refaire;
+>>>>>>> Stashed changes
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
         jeu = j;
@@ -98,6 +103,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreInferieure.add(createLabel("Copyright Groupe 5 - Projet Prog6 - 2022"));
         frame.add(barreInferieure, BorderLayout.SOUTH);
 
+        ((Component) gaufreGraphique).addMouseMotionListener(new AdaptateurSourisMouvement(gaufreGraphique, collecteurEvenements));
         ((Component) gaufreGraphique).addMouseListener(new AdaptateurSouris(gaufreGraphique, collecteurEvenements));
         frame.addKeyListener(new AdaptateurClavier(collecteurEvenements));
 
@@ -111,6 +117,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.setVisible(true);
     }
 
+<<<<<<< Updated upstream
     public void majScore(){
         if(J1 > J2){
             J1L.setForeground(new Color(104, 186, 118));
@@ -128,6 +135,11 @@ public class InterfaceGraphique implements Runnable, Observateur {
         }
         J1L.setText("J1 : " + J1);
         J2L.setText("    J2 : " + J2);
+=======
+    public void previsualisation(int joueurCourant, int coupX, int coupY, int largeurPreselection, int hauteurPreselection) {
+        gaufreGraphique.tracerRectangle(joueurCourant, coupX, coupY, largeurPreselection, hauteurPreselection);
+        ((Component) gaufreGraphique).repaint();
+>>>>>>> Stashed changes
     }
 
     @Override
