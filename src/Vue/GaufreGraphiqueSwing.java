@@ -75,7 +75,7 @@ public class GaufreGraphiqueSwing extends JComponent implements GaufreGraphique 
         if (joueurCourant == 1) {
             drawable.setColor(Color.MAGENTA);
         } else {
-            drawable.setColor(Color.CYAN);
+            drawable.setColor(Color.BLUE);
         }
         drawable.drawRect(x * largeurCase(), y * hauteurCase(), largeurCase * largeurCase(), hauteurCase * hauteurCase());
     }

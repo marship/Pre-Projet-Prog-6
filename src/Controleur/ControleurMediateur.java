@@ -24,6 +24,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 coupX = (coupX / interfaceGraphique.gaufreGraphique.largeurCase());
                 coupY = (coupY / interfaceGraphique.gaufreGraphique.hauteurCase());
                 jouerCoup(coupX, coupY);
+                interfaceGraphique.majJoueurCourant();
         } else {
             Configuration.instance().logger().info("Coup hors zone !\n");
         }
@@ -46,6 +47,8 @@ public class ControleurMediateur implements CollecteurEvenements {
             } else {
                 Configuration.instance().logger().info("Curseur hors zone !\n");
             }
+        } else {
+            // jeu.modifierTailleGauffre(0, 0); // ADRIEN VA MODIF CA !!!
         }
     }
 
@@ -104,6 +107,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 }
                 else{
                     interfaceGraphique.incrementeScore();
+                    interfaceGraphique.majScore();
                     jeu.modifierTailleGauffre(0, 0);
                     interfaceGraphique.metAJour();
                 }

@@ -22,7 +22,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
     boolean estMaximise;
     JFrame frame;
     public GaufreGraphique gaufreGraphique;
-    JLabel infoJoueurCourant, infoFin, scores, J1L, J2L;
+    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L;
     JButton annuler, refaire, nouvellePartie, suite;
     int J1, J2;
 
@@ -63,8 +63,13 @@ public class InterfaceGraphique implements Runnable, Observateur {
         Box barreLaterale = Box.createVerticalBox();
         barreLaterale.add(createLabel(" Gaufre Empoisonnée "));
         barreLaterale.add(Box.createGlue());
-        infoJoueurCourant = createLabel("Joueur " + jeu.getJoueurCourant() + " doit jouer");
-        barreLaterale.add(infoJoueurCourant);
+        Box barreJoueur = Box.createHorizontalBox();
+        infoJoueurCourantCouleur = createLabel("Joueur " + jeu.getJoueurCourant());
+        infoJoueurCourant = createLabel(" doit jouer");
+        majJoueurCourant();
+        barreJoueur.add(infoJoueurCourantCouleur);
+        barreJoueur.add(infoJoueurCourant);
+        barreLaterale.add(barreJoueur);
         barreLaterale.add(Box.createGlue());
         infoFin = createLabel(" Partie en cours ... ");
         barreLaterale.add(infoFin);
@@ -112,7 +117,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.setVisible(true);
     }
 
-    public void majScore(){
+    public void majScore() {
         if(J1 > J2){
             J1L.setForeground(new Color(104, 186, 118));
             J2L.setForeground(new Color(255,0,0));
@@ -131,6 +136,14 @@ public class InterfaceGraphique implements Runnable, Observateur {
         J2L.setText("    J2 : " + J2);
     }
 
+    public void majJoueurCourant() {
+        if (jeu.getJoueurCourant() == 1) {
+            infoJoueurCourantCouleur.setForeground(Color.MAGENTA);
+        } else {
+            infoJoueurCourantCouleur.setForeground(Color.BLUE);
+        }
+    }
+
     public void previsualisation(int joueurCourant, int coupX, int coupY, int largeurPreselection, int hauteurPreselection) {
         gaufreGraphique.tracerRectangle(joueurCourant, coupX, coupY, largeurPreselection, hauteurPreselection);
         ((Component) gaufreGraphique).repaint();
@@ -140,7 +153,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
     public void metAJour() {
         if (jeu.estTermine()) {
             infoFin.setText("Fin de partie !");
-            infoJoueurCourant.setText("Joueur " + jeu.getJoueurCourant() + " gagne !");
+            infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+            infoJoueurCourant.setText(" gagne !");
             incrementeScore();
             majScore();
             suite.setText("Manche Suivante");
@@ -148,11 +162,14 @@ public class InterfaceGraphique implements Runnable, Observateur {
             suite.setText("Abandon");
             infoFin.setText(" Partie en cours ... ");
             if (jeu.estCoupZoneDejaMangee()) {
-                infoJoueurCourant.setText("Joueur " + jeu.getJoueurCourant() + " doit rejouer, case deja mangee !");
+                infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+                infoJoueurCourant.setText(" doit rejouer, case deja mangee !");
             } else {
-                infoJoueurCourant.setText("Joueur " + jeu.getJoueurCourant() + " doit jouer");
+                infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+                infoJoueurCourant.setText(" doit jouer");
             }
         }
+        majJoueurCourant();
         annuler.setEnabled(jeu.gaufre().peutAnnuler());
         ((Component) gaufreGraphique).repaint();
     }
