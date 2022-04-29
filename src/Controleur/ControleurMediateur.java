@@ -72,6 +72,22 @@ public class ControleurMediateur implements CollecteurEvenements {
             case "fullscreen":
                 interfaceGraphique.basculePleinEcran();
                 break;
+            case "Nouvelle":
+                jeu.modifierTailleGauffre(0, 0);
+                interfaceGraphique.nouvelle();
+                interfaceGraphique.metAJour();
+                break;
+            case "suite":
+                if(jeu.estTermine()){
+                    jeu.modifierTailleGauffre(0, 0);
+                    interfaceGraphique.metAJour();
+                }
+                else{
+                    interfaceGraphique.incrementeScore();
+                    jeu.modifierTailleGauffre(0, 0);
+                    interfaceGraphique.metAJour();
+                }
+                
             default:
                 return false;
         }
