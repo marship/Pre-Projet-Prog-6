@@ -5,8 +5,8 @@ public class Gaufre extends Historique<Coup> {
     int nbLigneGaufre;
     int nbColonnesGaufre;
     public int[][] grilleGaufre;
-    // True : Joueur 1 | False : Joueur 2
-    boolean joueurCourant = true;
+    
+    boolean joueurCourant = true;   // True : Joueur 1 | False : Joueur 2
 
     public Gaufre(int ligne, int colonne) {
         initialisation(ligne, colonne);

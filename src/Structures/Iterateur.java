@@ -14,7 +14,7 @@ public abstract class Iterateur<Tata> {
 
     public void supprime() {
         if (!peutSupprimer) {
-            throw new IllegalStateException("Deux suppressions d'affilée");
+            throw new IllegalStateException("Deux suppressions d'affilee");
         }
         peutSupprimer = false;
     }

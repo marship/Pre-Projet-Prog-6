@@ -1,12 +1,10 @@
 package Modele;
 
 import Patterns.Commande;
-// import Structures.Iterateur;
 import Structures.Sequence;
+import Global.Configuration;
 
 import java.awt.Point;
-
-import Global.Configuration;
 
 public class Coup extends Commande {
 

@@ -13,7 +13,6 @@ public class SequenceTableauCirculaire<Loulou> implements Sequence<Loulou> {
     private void redimensionne() {
 
         if (taille >= tableauElements.length) {
-            // System.out.println("Redimension de " + tableauElements.length + " à " + tableauElements.length * 2);
             Object[] nouveau = new Object[tableauElements.length * 2];
             int fin = Math.min(debut + taille, tableauElements.length);
             for (int i = debut; i < fin; i++) {

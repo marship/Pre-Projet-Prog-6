@@ -73,7 +73,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreLaterale.add(annulerRefaire);
 
         barreLaterale.add(Box.createGlue());
-        barreLaterale.add(createLabel("Copyright A.GLEMBA 2022"));
+        barreLaterale.add(createLabel("Copyright Groupe 5 - Projet Prog6 - 2022"));
         frame.add(barreLaterale, BorderLayout.LINE_END);
 
         ((Component) gaufreGraphique).addMouseListener(new AdaptateurSouris(gaufreGraphique, collecteurEvenements));

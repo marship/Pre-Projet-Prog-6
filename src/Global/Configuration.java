@@ -28,7 +28,7 @@ public class Configuration {
     protected Configuration() {
         properties = new Properties();
         try {
-            InputStream propertiesInputStream = charge("conigGaufre.cfg");
+            InputStream propertiesInputStream = charge("configGaufre.cfg");
             properties.load(propertiesInputStream);
             
             String home = System.getProperty("user.home");
@@ -37,7 +37,7 @@ public class Configuration {
             properties = new Properties(properties);
             properties.load(fileInputStream);
         } catch (Exception e) {
-            System.err.println("Erreur du chargement de la configuration : " + e);
+            Configuration.instance().logger().warning("Erreur du chargement de la configuration : " + e + "\n");
         }
 	}
 
@@ -48,7 +48,7 @@ public class Configuration {
     public String lis(String cle) {
         String resultat = properties.getProperty(cle);
         if (resultat == null) {
-            throw new NoSuchElementException("Propriete " + cle + " non definie");
+            throw new NoSuchElementException("Propriete " + cle + " non definie dans 'configGaufre.cfg'");
         }
         return resultat;
     }

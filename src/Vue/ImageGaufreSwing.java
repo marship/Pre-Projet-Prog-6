@@ -14,7 +14,7 @@ public class ImageGaufreSwing extends ImageGaufre {
             // Chargement d'une image utilisable dans Swing
             image = ImageIO.read(inputStream);
         } catch (Exception e) {
-            Configuration.instance().logger().severe("Impossible de charger l'image !");
+            Configuration.instance().logger().severe("Impossible de charger l'image !\n");
             System.exit(1);
         }
     }

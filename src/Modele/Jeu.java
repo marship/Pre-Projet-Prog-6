@@ -19,7 +19,7 @@ public class Jeu extends Observable {
 
     public void modifierTailleGauffre(int modifLigne, int modifColonne) {
         if ((gaufre.lignes() == 1 && modifLigne == -1) || (gaufre.colonnes() == 1 && modifColonne == -1)) {
-            Configuration.instance().logger().info("Reduction de la grille impossible\n");
+            Configuration.instance().logger().warning("Reduction de la grille impossible\n");
         } else {
             gaufre.initialisation(gaufre.lignes() + modifLigne, gaufre.colonnes() + modifColonne);
         }
@@ -35,7 +35,7 @@ public class Jeu extends Observable {
             miseAJour();
         } else if (gaufre.estTermine()) {
             int joueurGagnant = gaufre.joueurCourant() ? 2 : 1;
-            Configuration.instance().logger().info("Le jeu est fini, Joueur " + joueurGagnant + " a gagne !\n");
+            Configuration.instance().logger().info("La partie est termine ! Joueur " + joueurGagnant + " a gagne !\n");
         } else if (gaufre.grilleGaufre[coupY][coupX] == -1) {
             Configuration.instance().logger().info("La gaufre est deja mangee !\n");
         }
