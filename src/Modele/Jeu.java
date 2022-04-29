@@ -7,6 +7,10 @@ public class Jeu extends Observable {
 
     int joueurGagnant;
     int joueurCourant;
+    int largeurPrevisualisation;
+    int hauteurPrevisualisation;
+    int previsualisationX;
+    int previsualisationY;
     Gaufre gaufre;
     boolean coupZoneDejaMangee = false;
 
@@ -81,5 +85,36 @@ public class Jeu extends Observable {
         Coup coup = gaufre.refaire();
         miseAJour();
         return coup;
+    }
+
+    public int largeurPrevisualisation() {
+        return largeurPrevisualisation;
+    }
+
+    public int hauteurPrevisualisation() {
+        return hauteurPrevisualisation;
+    }
+    public int previsualisationX() {
+        return previsualisationX;
+    }
+
+    public int previsualisationY() {
+        return previsualisationY;
+    }
+
+    public void setLargeurPrevisualisation(int valeurlargeur) {
+        largeurPrevisualisation = valeurlargeur;
+    }
+
+    public void setHauteurPrevisualisation(int valeurhauteur) {
+        hauteurPrevisualisation = valeurhauteur;
+    }
+
+    public void setPrevisualisationX(int coupX) {
+        previsualisationX = coupX;
+    }
+
+    public void setPrevisualisationY(int coupY) {
+        previsualisationY = coupY;
     }
 }

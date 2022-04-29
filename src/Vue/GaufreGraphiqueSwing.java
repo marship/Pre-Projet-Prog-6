@@ -35,6 +35,7 @@ public class GaufreGraphiqueSwing extends JComponent implements GaufreGraphique 
         drawable.clearRect(0, 0, largeur, hauteur);
 
         vueGaufre.tracerGaufre();
+        vueGaufre.tracerPrevisualisation();
     }
 
     @Override
@@ -66,5 +67,16 @@ public class GaufreGraphiqueSwing extends JComponent implements GaufreGraphique 
         drawable.setColor(new Color(0,0,0));
         drawable.setStroke(new BasicStroke(EPAISSEUR_BORDURE));
         drawable.drawLine(x, y, largeurCase, hauteurCase);
+    }
+
+    @Override
+    public void tracerRectangle(int joueurCourant, int x, int y, int largeurCase, int hauteurCase) {
+        drawable.setStroke(new BasicStroke(EPAISSEUR_BORDURE));
+        if (joueurCourant == 1) {
+            drawable.setColor(Color.MAGENTA);
+        } else {
+            drawable.setColor(Color.CYAN);
+        }
+        drawable.drawRect(x * largeurCase(), y * hauteurCase(), largeurCase * largeurCase(), hauteurCase * hauteurCase());
     }
 }

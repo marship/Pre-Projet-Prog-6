@@ -40,6 +40,10 @@ public class VueGaufre {
         return hauteurCase;
     }
 
+    public void tracerPrevisualisation() {
+        gaufreGraphique.tracerRectangle(jeu.getJoueurCourant(), jeu.previsualisationX(), jeu.previsualisationY(), jeu.largeurPrevisualisation(), jeu.hauteurPrevisualisation());
+    }
+
     public void tracerGaufre() {
 
         largeurCase = gaufreGraphique.largeur() / gaufre.colonnes();

@@ -29,6 +29,26 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
     }
 
+    @Override
+    public void traqueSouris(int coupX, int coupY) {
+        
+        if (!jeu.estTermine()) {
+            if ((coupX <= jeu.gaufre().colonnes() * interfaceGraphique.gaufreGraphique.largeurCase()) && (coupY <= jeu.gaufre().lignes() * interfaceGraphique.gaufreGraphique.hauteurCase())) {
+                coupX = (coupX / interfaceGraphique.gaufreGraphique.largeurCase());
+                coupY = (coupY / interfaceGraphique.gaufreGraphique.hauteurCase());
+                
+                jeu.setLargeurPrevisualisation(jeu.gaufre().colonnes() - coupX);
+                jeu.setHauteurPrevisualisation(jeu.gaufre().lignes() - coupY);
+                jeu.setPrevisualisationX(coupX);
+                jeu.setPrevisualisationY(coupY);
+    
+                interfaceGraphique.previsualisation(jeu.getJoueurCourant(), coupX, coupY, jeu.largeurPrevisualisation(), jeu.hauteurPrevisualisation());
+            } else {
+                Configuration.instance().logger().info("Curseur hors zone !\n");
+            }
+        }
+    }
+
     void jouerCoup(int coupX, int coupY) {
         jeu.jouerCoup(coupX, coupY);
     }

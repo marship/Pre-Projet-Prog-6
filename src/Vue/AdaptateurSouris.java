@@ -3,6 +3,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class AdaptateurSouris extends MouseAdapter {
+    
     GaufreGraphique gaufreGraphique;
     CollecteurEvenements collecteurEvenements;
 
