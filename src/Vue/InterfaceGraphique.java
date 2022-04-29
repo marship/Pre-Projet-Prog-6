@@ -20,10 +20,10 @@ public class InterfaceGraphique implements Runnable, Observateur {
     Jeu jeu;
     CollecteurEvenements collecteurEvenements;
     boolean estMaximise;
-    JFrame frame;
+    public JFrame frame;
     public GaufreGraphique gaufreGraphique;
-    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L;
-    JButton annuler, refaire, nouvellePartie, suite;
+    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille;
+    JButton annuler, refaire, nouvellePartie, suite, save, load;
     int J1, J2;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
@@ -62,6 +62,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
         // Box
         Box barreLaterale = Box.createVerticalBox();
         barreLaterale.add(createLabel(" Gaufre Empoisonnée "));
+        taille = createLabel("Lignes : " + jeu.gaufre().lignes() + "    Colonnes : " + jeu.gaufre().colonnes());
+        barreLaterale.add(taille);
         barreLaterale.add(Box.createGlue());
         Box barreJoueur = Box.createHorizontalBox();
         infoJoueurCourantCouleur = createLabel("Joueur " + jeu.getJoueurCourant());
@@ -72,7 +74,6 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreLaterale.add(barreJoueur);
         barreLaterale.add(Box.createGlue());
         infoFin = createLabel(" Partie en cours ... ");
-        barreLaterale.add(infoFin);
         scores = createLabel("Scores");
         barreLaterale.add(scores);
         Box barreScores = Box.createHorizontalBox();
@@ -94,6 +95,17 @@ public class InterfaceGraphique implements Runnable, Observateur {
         annulerRefaire.add(annuler);
         annulerRefaire.add(refaire);
         barreLaterale.add(annulerRefaire);
+        barreLaterale.add(Box.createGlue());
+
+        // Save et Load
+        Box sauvegardeCharge = Box.createHorizontalBox();
+        save = creerBouton("Sauvegarder", "save");
+        load = creerBouton("Charger", "load");
+        sauvegardeCharge.add(save);
+        sauvegardeCharge.add(load);
+        barreLaterale.add(sauvegardeCharge);
+        barreLaterale.add(Box.createGlue());
+
         nouvellePartie = creerBouton("Nouvelle Partie", "Nouvelle");
         barreLaterale.add(nouvellePartie);
         barreLaterale.add(Box.createGlue());
@@ -117,7 +129,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.setVisible(true);
     }
 
-    public void majScore() {
+    public void majScore(){
         if(J1 > J2){
             J1L.setForeground(new Color(104, 186, 118));
             J2L.setForeground(new Color(255,0,0));
@@ -134,6 +146,10 @@ public class InterfaceGraphique implements Runnable, Observateur {
         }
         J1L.setText("J1 : " + J1);
         J2L.setText("    J2 : " + J2);
+    }
+
+    public void majTaille(){
+        taille.setText("Lignes : " + jeu.gaufre().lignes() + "    Colonnes : " + jeu.gaufre().colonnes());
     }
 
     public void majJoueurCourant() {
