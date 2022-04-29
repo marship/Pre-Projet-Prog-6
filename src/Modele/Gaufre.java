@@ -25,8 +25,6 @@ public class Gaufre extends Historique<Coup> {
             }
         }
         grilleGaufre[0][0] = 1;
-
-        afficherGaufre();
     }
 
     // Determiner Coup
