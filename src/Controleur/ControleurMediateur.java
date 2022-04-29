@@ -1,5 +1,12 @@
 package Controleur;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 import Global.Configuration;
 import Joueur.IA;
 import Modele.Jeu;
@@ -67,20 +74,24 @@ public class ControleurMediateur implements CollecteurEvenements {
     @Override
     public boolean commande(String commande) {
         switch (commande) {
-            case "up":
+            case "down":
                 jeu.modifierTailleGauffre(1, 0);
+                interfaceGraphique.majTaille();
                 interfaceGraphique.metAJour();
                 break;
-            case "down":
+            case "up":
                 jeu.modifierTailleGauffre(-1, 0);
+                interfaceGraphique.majTaille();
                 interfaceGraphique.metAJour();
                 break;
             case "left":
                 jeu.modifierTailleGauffre(0, -1);
+                interfaceGraphique.majTaille();
                 interfaceGraphique.metAJour();
                 break;
             case "right":
                 jeu.modifierTailleGauffre(0, 1);
+                interfaceGraphique.majTaille();
                 interfaceGraphique.metAJour();
                 break;
             case "quit":
@@ -106,11 +117,19 @@ public class ControleurMediateur implements CollecteurEvenements {
                     interfaceGraphique.metAJour();
                 }
                 else{
+                    jeu.gaufre().joueurCourant = !jeu.gaufre().joueurCourant();
                     interfaceGraphique.incrementeScore();
                     interfaceGraphique.majScore();
                     jeu.modifierTailleGauffre(0, 0);
                     interfaceGraphique.metAJour();
                 }
+                break;
+            case "save":
+                sauvegarder();
+                break;
+            case "load":
+                charge();
+                break;
                 
             default:
                 return false;
@@ -121,5 +140,34 @@ public class ControleurMediateur implements CollecteurEvenements {
     @Override
     public void fixerInterfaceUtilisateur(InterfaceGraphique iGraphique) {
         interfaceGraphique = iGraphique;
+    }
+
+    public void charge() {
+        System.out.println(System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes");
+        JFileChooser chooser = new JFileChooser(System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes");
+        int returnVal = chooser.showOpenDialog(interfaceGraphique.frame);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            JOptionPane.showMessageDialog(null,"Vous n'avez rien sélectionné.");
+            return;
+        }
+        try {
+            File myObj = new File(chooser.getSelectedFile().getPath());
+            Scanner myReader = new Scanner(myObj);
+            int kijou = Integer.parseInt(myReader.nextLine());
+            int score1 = Integer.parseInt(myReader.nextLine());
+            int score2 = Integer.parseInt(myReader.nextLine());
+            while (myReader.hasNextLine()) {
+                // Jouer et Ajouter les coups
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        
+    }
+
+    public void sauvegarder() {
+
     }
 }
