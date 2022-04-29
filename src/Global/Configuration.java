@@ -32,6 +32,11 @@ public class Configuration {
             properties.load(propertiesInputStream);
             
             String home = System.getProperty("user.home");
+		
+	    File f = new File(home + File.separator + ".gaufreEmpoisonnee");
+            if(!f.isFile()){ 
+                f.createNewFile();
+            }
 
             FileInputStream fileInputStream = new FileInputStream(home + File.separator + ".gaufreEmpoisonnee");
             properties = new Properties(properties);
