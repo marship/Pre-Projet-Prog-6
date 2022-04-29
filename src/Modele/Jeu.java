@@ -5,7 +5,10 @@ import Patterns.Observable;
 
 public class Jeu extends Observable {
 
+    int joueurGagnant;
+    int joueurCourant;
     Gaufre gaufre;
+    boolean coupZoneDejaMangee = false;
 
     public Jeu() {
         int nbLignesGaufre = Integer.parseInt(Configuration.instance().lis("Ligne"));
@@ -29,16 +32,43 @@ public class Jeu extends Observable {
         return gaufre.estCoupJouable(coupX, coupY);
     }
 
+    public boolean estTermine() {
+        return gaufre.estTermine();
+    }
+
     public void jouerCoup(int coupX, int coupY) {
+        coupZoneDejaMangee = false;
         if ((gaufre.grilleGaufre[coupY][coupX] != -1) && !gaufre.estTermine() && estCoupJouable(coupX, coupY)) {
             gaufre.jouerCoup(coupX, coupY);
             miseAJour();
+            verificationJoueurGagnant();
         } else if (gaufre.estTermine()) {
-            int joueurGagnant = gaufre.joueurCourant() ? 2 : 1;
-            Configuration.instance().logger().info("La partie est termine ! Joueur " + joueurGagnant + " a gagne !\n");
+            afficherJoueurGagnant();
         } else if (gaufre.grilleGaufre[coupY][coupX] == -1) {
             Configuration.instance().logger().info("La gaufre est deja mangee !\n");
+            coupZoneDejaMangee = true;
+            miseAJour();
         }
+    }
+
+    public void verificationJoueurGagnant() {
+        if (gaufre.estTermine()) {
+            // Inversion resultat car changement de joueur s'effectue apres le dernier coup joué
+            joueurGagnant = gaufre.joueurCourant() ? 1 : 2;
+            afficherJoueurGagnant();
+        }
+    }
+
+    public boolean estCoupZoneDejaMangee() {
+        return coupZoneDejaMangee;
+    }
+
+    public int getJoueurCourant() {
+        return joueurCourant = gaufre.joueurCourant() ? 1 : 2;
+    }
+
+    public void afficherJoueurGagnant() {
+        Configuration.instance().logger().info("La partie est termine ! Joueur " + joueurGagnant + " a gagne !\n");
     }
 
     public Coup annule() {

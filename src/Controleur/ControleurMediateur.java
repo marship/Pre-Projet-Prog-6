@@ -20,11 +20,9 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     @Override
     public void clicSouris(int coupX, int coupY) {
-        jeu.gaufre().afficherGaufre();
         if ((coupX <= jeu.gaufre().colonnes() * interfaceGraphique.gaufreGraphique.largeurCase()) && (coupY <= jeu.gaufre().lignes() * interfaceGraphique.gaufreGraphique.hauteurCase())) {
                 coupX = (coupX / interfaceGraphique.gaufreGraphique.largeurCase());
                 coupY = (coupY / interfaceGraphique.gaufreGraphique.hauteurCase());
-                System.out.println(coupX + " " + coupX);
                 jouerCoup(coupX, coupY);
         } else {
             Configuration.instance().logger().info("Coup hors zone !\n");

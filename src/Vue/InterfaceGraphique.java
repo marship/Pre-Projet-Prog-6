@@ -21,7 +21,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
     boolean estMaximise;
     JFrame frame;
     public GaufreGraphique gaufreGraphique;
-    JLabel nbPas, nbPoussees;
+    JLabel nbPas, nbPoussees, infoJoueurCourant, infoFin;
     JButton annuler, refaire;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
@@ -59,7 +59,13 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
         // Box
         Box barreLaterale = Box.createVerticalBox();
-        barreLaterale.add(createLabel("Gaufre Empoisonnée"));
+        barreLaterale.add(createLabel(" Gaufre Empoisonnée "));
+        barreLaterale.add(Box.createGlue());
+        infoJoueurCourant = createLabel("Joueur " + jeu.getJoueurCourant() + " doit jouer");
+        barreLaterale.add(infoJoueurCourant);
+        barreLaterale.add(Box.createGlue());
+        infoFin = createLabel(" Partie en cours ... ");
+        barreLaterale.add(infoFin);
         barreLaterale.add(Box.createGlue());
 
         // Annuler / Refaire
@@ -71,10 +77,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
         annulerRefaire.add(annuler);
         annulerRefaire.add(refaire);
         barreLaterale.add(annulerRefaire);
-
         barreLaterale.add(Box.createGlue());
-        barreLaterale.add(createLabel("Copyright Groupe 5 - Projet Prog6 - 2022"));
         frame.add(barreLaterale, BorderLayout.LINE_END);
+
+        Box barreInferieure = Box.createHorizontalBox();
+        barreInferieure.add(createLabel("Copyright Groupe 5 - Projet Prog6 - 2022"));
+        frame.add(barreInferieure, BorderLayout.SOUTH);
 
         ((Component) gaufreGraphique).addMouseListener(new AdaptateurSouris(gaufreGraphique, collecteurEvenements));
         frame.addKeyListener(new AdaptateurClavier(collecteurEvenements));
@@ -85,12 +93,23 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // On fixe la taille et on demarre
-        frame.setSize(800, 500);
+        frame.setSize(760, 500);
         frame.setVisible(true);
     }
 
     @Override
     public void metAJour() {
+        if (jeu.estTermine()) {
+            infoFin.setText("Fin de partie !");
+            infoJoueurCourant.setText("Joueur " + jeu.getJoueurCourant() + " gagne !");
+        } else {
+            infoFin.setText(" Partie en cours ... ");
+            if (jeu.estCoupZoneDejaMangee()) {
+                infoJoueurCourant.setText("Joueur " + jeu.getJoueurCourant() + " doit rejouer, case deja mangee !");
+            } else {
+                infoJoueurCourant.setText("Joueur " + jeu.getJoueurCourant() + " doit jouer");
+            }
+        }
         annuler.setEnabled(jeu.gaufre().peutAnnuler());
         ((Component) gaufreGraphique).repaint();
     }
