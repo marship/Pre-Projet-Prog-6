@@ -8,10 +8,10 @@
 *.ear
 *.nar
 hs_err_pid*
-bin/
 
 ##############################
 ## Visual Studio Code
 ##############################
 .vscode/
 .code-workspace
+.bin/
