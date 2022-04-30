@@ -178,7 +178,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         } else {
             suite.setText("Abandon");
             infoFin.setText(" Partie en cours ... ");
-            if (jeu.estCoupZoneDejaMangee()) {
+            if (jeu.estDejaMangee()) {
                 infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
                 infoJoueurCourant.setText(" doit rejouer, case deja mangee !");
             } else {

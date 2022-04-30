@@ -4,10 +4,13 @@ public class Gaufre extends Historique<Coup> {
 
     int nbLigneGaufre;
     int nbColonnesGaufre;
-    public int[][] grilleGaufre;
-    
     public boolean joueurCourant = true;   // True : Joueur 1 | False : Joueur 2
 
+    //  0 : Morceau de gaufre mangeable
+    //  1 : Morceau de gaufre empoisonné
+    // -1 : Morceau de gaufre déjà mangé
+    public int[][] grilleGaufre;
+    
     public Gaufre(int ligne, int colonne) {
         initialisation(ligne, colonne);
     }
@@ -16,7 +19,6 @@ public class Gaufre extends Historique<Coup> {
         nbLigneGaufre = ligne;
         nbColonnesGaufre = colonne;
         joueurCourant = true;
-
         grilleGaufre = new int[nbLigneGaufre][nbColonnesGaufre];
 
         for (int i = 0; i < lignes(); i++) {
@@ -27,7 +29,10 @@ public class Gaufre extends Historique<Coup> {
         grilleGaufre[0][0] = 1;
     }
 
-    // Determiner Coup
+    public boolean estCoupJouable(int coupX, int coupY) {
+        return grilleGaufre[coupY][coupX] != -1;
+    }
+
     public void jouerCoup(int coupX, int coupY) {
         for (int i = coupY; i < grilleGaufre.length; i++) {
             for (int j = coupX; (j < grilleGaufre[i].length) && (grilleGaufre[i][j] != -1); j++) {
@@ -37,22 +42,6 @@ public class Gaufre extends Historique<Coup> {
         changerJoueur();
     }
 
-    // Jouer Coup
-    void ajoutHistorique(Coup coup) {
-        coup.fixerGaufre(this);
-        nouveau(coup);
-    }
-
-    public int lignes() {
-        return nbLigneGaufre;
-    }
-
-    public int colonnes() {
-        return nbColonnesGaufre;
-    }
-
-    // TO DO si temps : Nb Coup joue
-
     public boolean joueurCourant() {
         return joueurCourant;
     }
@@ -61,12 +50,16 @@ public class Gaufre extends Historique<Coup> {
         joueurCourant = !joueurCourant;
     }
 
-    public boolean estCoupJouable(int coupX, int coupY) {
-        return grilleGaufre[coupY][coupX] != -1;
-    }
-
     public boolean estTermine() {
         return grilleGaufre[0][0] != 1;
+    }
+
+    public int lignes() {
+        return nbLigneGaufre;
+    }
+
+    public int colonnes() {
+        return nbColonnesGaufre;
     }
 
     public void afficherGaufre() {
@@ -79,4 +72,12 @@ public class Gaufre extends Historique<Coup> {
         System.out.println();
     }
 
+    // ================================
+    // ========== HISTORIQUE ==========
+    // ================================
+
+    void ajoutHistorique(Coup coup) {
+        coup.fixerGaufre(this);
+        nouveau(coup);
+    }
 }

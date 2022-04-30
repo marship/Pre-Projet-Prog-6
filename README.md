@@ -1,18 +1,65 @@
-## Getting Started
+### Pré-Projet de Prog 6
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+# Objectifs
 
-## Folder Structure
+    Tester le projet sur une petite échelle.
+    Réfléchir à l’architecture logicielle de votre jeu.
+    Appréhender le travail au sein de votre groupe.
 
-The workspace contains two folders by default, where:
+# Mise en œuvre
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+    3 jours de travail.
+    Revue de la part des enseignants le 3 mai (en présentiel).
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+# Non noté
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+### Contraintes de réalisation
 
-## Dependency Management
+## IHM
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+    Claire : état du jeu, tour, score, fonctionnalités
+    Ergonomique : organisation, utilisation
+
+## Niveaux pour l’IA
+
+    Aléatoire
+    Coup gagnant/perdant
+    Arbre et/ou
+
+## Fonctionnalités
+
+    Jeu à deux joueurs sur une même fenêtre
+    Historique : annuler / refaire sans limite
+    Sauvegarder / charger avec historique
+    Nouvelle partie
+    Coup aléatoire parmi les meilleurs coups
+
+### Membres du groupe
+
+BALSA Raphaël
+CASAGRANDE Dorian
+FAURE-JEUNOT Paul
+FAURIE Alban
+GLEMBA Adrien
+LAMBERT Mathis
+
+### La gaufre empoisonnée
+
+C'est un jeu à 2 joueurs. Le but du jeu est d'obliger l'autre joueur à jouer le coup perdant. 
+
+Déroulement de la partie :
+
+    L'un des deux joueurs commence.
+    Ensuite, chacun joue à tour de rôle et est obligé de jouer (passer son tour est interdit) jusqu'à ce qu'un des joueurs joue le coup perdant.La partie est alors terminée, ce dernier joueur est déclaré perdant et l'autre gagnant.
+
+### Structure de l'espace de travail
+
+L'espace de travail contient trois dossiers :
+
+- `src` : le dossier pour maintenir le code source.
+- `res` : le dossier pour maintenir les ressources.
+- `lib` : le dossier pour maintenir les dépendances.
+
+Les fichiers de sortie compilés seront générés dans le dossier `bin`.
+
+Le fichier `.gitignore` permet de ne pas polluer le dépôt Git.

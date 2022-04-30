@@ -67,7 +67,7 @@ public class SequenceListe<Titi> implements Sequence<Titi> {
             courant = courant.suivant;
         }
         resultat = resultat + "]";
-
+        
         return resultat;
     }
 }

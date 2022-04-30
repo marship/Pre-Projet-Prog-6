@@ -9,7 +9,6 @@ public abstract class Iterateur<Tata> {
     public Object prochain() {
         peutSupprimer = true;
         return null;
-
     }
 
     public void supprime() {
