@@ -30,12 +30,11 @@ public class Configuration {
         try {
             InputStream propertiesInputStream = charge("configGaufre.cfg");
             properties.load(propertiesInputStream);
-            
             String home = System.getProperty("user.home");
-		
-	    File f = new File(home + File.separator + ".gaufreEmpoisonnee");
-            if(!f.isFile()){ 
-                f.createNewFile();
+
+            File file = new File(home + File.separator + ".gaufreEmpoisonnee");
+            if(!file.isFile()) { 
+                file.createNewFile();
             }
 
             FileInputStream fileInputStream = new FileInputStream(home + File.separator + ".gaufreEmpoisonnee");
