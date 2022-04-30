@@ -56,11 +56,14 @@ public class Jeu extends Observable {
     }
 
     public void verificationJoueurGagnant() {
-        if (gaufre.estTermine()) {
-            // Inversion resultat car changement de joueur s'effectue apres le dernier coup joué
-            joueurGagnant = gaufre.joueurCourant() ? 1 : 2;
+        if (estTermine()) {
+            setJoueurGagnant(getJoueurCourant());
             afficherJoueurGagnant();
         }
+    }
+
+    private void setJoueurGagnant(int joueur) {
+        joueurGagnant = joueur;
     }
 
     public boolean estCoupZoneDejaMangee() {
@@ -68,7 +71,20 @@ public class Jeu extends Observable {
     }
 
     public int getJoueurCourant() {
+        // Inversion resultat car changement de joueur s'effectue apres le dernier coup joué
         return joueurCourant = gaufre.joueurCourant() ? 1 : 2;
+    }
+
+    private void setJoueurCourant(int joueur) {
+        joueurCourant = joueur;
+    }
+
+    public void changerJoueurCourant() {
+        if (getJoueurCourant() == 1) {
+            setJoueurCourant(2);
+        } else {
+            setJoueurCourant(1);
+        }
     }
 
     public void afficherJoueurGagnant() {

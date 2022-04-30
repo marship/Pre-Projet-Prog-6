@@ -20,7 +20,7 @@ public class BoutonRefaire extends JButton implements Observateur {
     }
 
     @Override
-    public void metAJour() {
+    public void majInfoPartie() {
         setEnabled(jeu.gaufre().peutRefaire());
     }
 }

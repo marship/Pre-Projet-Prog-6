@@ -16,121 +16,157 @@ import Vue.InterfaceGraphique;
 public class ControleurMediateur implements CollecteurEvenements {
 
     InterfaceGraphique interfaceGraphique;
-    Configuration configuration;
-    Jeu jeu;
     IA joueurAutomatique;
-
+    Jeu jeu;
+    
     public ControleurMediateur(Jeu j) {
-        configuration = Configuration.instance();
         jeu = j;
     }
 
     @Override
     public void clicSouris(int coupX, int coupY) {
-        if ((coupX <= jeu.gaufre().colonnes() * interfaceGraphique.gaufreGraphique.largeurCase()) && (coupY <= jeu.gaufre().lignes() * interfaceGraphique.gaufreGraphique.hauteurCase())) {
-                coupX = (coupX / interfaceGraphique.gaufreGraphique.largeurCase());
-                coupY = (coupY / interfaceGraphique.gaufreGraphique.hauteurCase());
-                jouerCoup(coupX, coupY);
-                interfaceGraphique.majJoueurCourant();
+        if (estPositionSourisCorrect(coupX, coupY)) {
+            jouerCoup(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
+            interfaceGraphique.majJoueurCourant();
         } else {
-            Configuration.instance().logger().info("Coup hors zone !\n");
+            Configuration.instance().logger().info("Coup hors gaufre !\n");
         }
     }
 
     @Override
     public void traqueSouris(int coupX, int coupY) {
         
-        if (!jeu.estTermine()) {
-            if ((coupX <= jeu.gaufre().colonnes() * interfaceGraphique.gaufreGraphique.largeurCase()) && (coupY <= jeu.gaufre().lignes() * interfaceGraphique.gaufreGraphique.hauteurCase())) {
-                coupX = (coupX / interfaceGraphique.gaufreGraphique.largeurCase());
-                coupY = (coupY / interfaceGraphique.gaufreGraphique.hauteurCase());
-                
-                jeu.setLargeurPrevisualisation(jeu.gaufre().colonnes() - coupX);
-                jeu.setHauteurPrevisualisation(jeu.gaufre().lignes() - coupY);
-                jeu.setPrevisualisationX(coupX);
-                jeu.setPrevisualisationY(coupY);
-    
-                interfaceGraphique.previsualisation(jeu.getJoueurCourant(), coupX, coupY, jeu.largeurPrevisualisation(), jeu.hauteurPrevisualisation());
+        if (jeu.estTermine()) {
+            // Désactiver Prévisualisation
+            gestionPrevisualisationCoup(coupX, coupY, true);
+        } else {
+            if (estPositionSourisCorrect(coupX, coupY)) {
+                coupX = conversionCoordonneeVersCases(coupX, true);
+                coupY = conversionCoordonneeVersCases(coupY, false);
+                // Activer Prévisualisation
+                gestionPrevisualisationCoup(coupX, coupY, false);
             } else {
                 Configuration.instance().logger().info("Curseur hors zone !\n");
             }
-        } else {
-            // jeu.modifierTailleGauffre(0, 0); // ADRIEN VA MODIF CA !!!
         }
+    }
+
+    boolean estPositionSourisCorrect(int coupX, int coupY) {
+        return (coupX <= jeu.gaufre().colonnes() * interfaceGraphique.gaufreGraphique.largeurCase()) && (coupY <= jeu.gaufre().lignes() * interfaceGraphique.gaufreGraphique.hauteurCase());
+    }
+
+    int conversionCoordonneeVersCases(int coup, Boolean X) {
+        if (X) {
+            return coup = (coup / interfaceGraphique.gaufreGraphique.largeurCase());
+        } else {
+            return coup = (coup / interfaceGraphique.gaufreGraphique.hauteurCase());
+        }
+    }
+
+    void gestionPrevisualisationCoup(int coupX, int coupY, boolean reset) {
+        int valeurLargeurPrevisualisation = 0;
+        int valeurHauteurPrevisualisation = 0;
+        if (!reset) {
+            valeurLargeurPrevisualisation = jeu.gaufre().colonnes() - coupX;
+            valeurHauteurPrevisualisation = jeu.gaufre().lignes() - coupY;
+        } else {
+            coupX = 0;
+            coupY = 0;
+        }
+        setPrevisualisationCoup(valeurLargeurPrevisualisation, valeurHauteurPrevisualisation, coupX, coupY);
+        previsualisationCoup(coupX, coupY);
+    }
+
+    void setPrevisualisationCoup(int valeurLargeurPrevisualisation, int valeurHauteurPrevisualisation, int coupX, int coupY) {
+        jeu.setLargeurPrevisualisation(valeurLargeurPrevisualisation);
+        jeu.setHauteurPrevisualisation(valeurHauteurPrevisualisation);
+        jeu.setPrevisualisationX(coupX);
+        jeu.setPrevisualisationY(coupY);
+    }
+
+    void previsualisationCoup(int coupX, int coupY) {
+        interfaceGraphique.previsualisation(jeu.getJoueurCourant(), coupX, coupY, jeu.largeurPrevisualisation(), jeu.hauteurPrevisualisation());
     }
 
     void jouerCoup(int coupX, int coupY) {
         jeu.jouerCoup(coupX, coupY);
     }
 
+    // TO DO (faire fonctionner)
     void annule() {
         jeu.annule();
     }
 
+    // TO DO (faire fonctionner)
     void refaire() {
         jeu.refaire();
+    }
+
+    void modificationTailleGaufre(int nbLigne, int nbColonne) {
+        gestionMajTailleGaufre(nbLigne, nbColonne);
+        interfaceGraphique.majTexteTailleGaufre();
+    }
+
+    void gestionMajTailleGaufre(int nbLigne, int nbColonne) {
+        jeu.modifierTailleGauffre(nbLigne, nbColonne);
+        interfaceGraphique.majInfoPartie();
+    }
+
+    void majPointScore() {
+        interfaceGraphique.incrementeScore();
+        interfaceGraphique.majScore();
     }
 
     @Override
     public boolean commande(String commande) {
         switch (commande) {
             case "down":
-                jeu.modifierTailleGauffre(1, 0);
-                interfaceGraphique.majTaille();
-                interfaceGraphique.metAJour();
+                modificationTailleGaufre(1, 0);
                 break;
             case "up":
-                jeu.modifierTailleGauffre(-1, 0);
-                interfaceGraphique.majTaille();
-                interfaceGraphique.metAJour();
+                modificationTailleGaufre(-1, 0);
                 break;
             case "left":
-                jeu.modifierTailleGauffre(0, -1);
-                interfaceGraphique.majTaille();
-                interfaceGraphique.metAJour();
+                modificationTailleGaufre(0, -1);
                 break;
             case "right":
-                jeu.modifierTailleGauffre(0, 1);
-                interfaceGraphique.majTaille();
-                interfaceGraphique.metAJour();
+                modificationTailleGaufre(0, 1);
                 break;
             case "quit":
                 System.exit(0);
                 break;
             case "annule":
+                // TO DO (faire fonctionner)
                 annule();
                 break;
             case "refaire":
+                // TO DO (faire fonctionner)
                 refaire();
                 break;
             case "fullscreen":
                 interfaceGraphique.basculePleinEcran();
                 break;
             case "Nouvelle":
-                jeu.modifierTailleGauffre(0, 0);
+                gestionMajTailleGaufre(0, 0);
                 interfaceGraphique.nouvelle();
-                interfaceGraphique.metAJour();
                 break;
             case "suite":
-                if(jeu.estTermine()){
-                    jeu.modifierTailleGauffre(0, 0);
-                    interfaceGraphique.metAJour();
-                }
-                else{
-                    jeu.gaufre().joueurCourant = !jeu.gaufre().joueurCourant();
-                    interfaceGraphique.incrementeScore();
-                    interfaceGraphique.majScore();
-                    jeu.modifierTailleGauffre(0, 0);
-                    interfaceGraphique.metAJour();
+                if(jeu.estTermine()) {
+                    gestionMajTailleGaufre(0, 0);
+                } else {
+                    jeu.changerJoueurCourant();
+                    majPointScore();
+                    gestionMajTailleGaufre(0, 0);
                 }
                 break;
             case "save":
+                // TO DO (faire fonctionner)
                 sauvegarder();
                 break;
             case "load":
+                // TO DO (faire fonctionner)
                 charge();
                 break;
-                
             default:
                 return false;
         }
@@ -138,10 +174,11 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     @Override
-    public void fixerInterfaceUtilisateur(InterfaceGraphique iGraphique) {
+    public void fixerInterfaceGraphique(InterfaceGraphique iGraphique) {
         interfaceGraphique = iGraphique;
     }
 
+    // TO DO (faire fonctionner)
     public void charge() {
         System.out.println(System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes");
         JFileChooser chooser = new JFileChooser(System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes");
@@ -167,6 +204,7 @@ public class ControleurMediateur implements CollecteurEvenements {
         
     }
 
+    // TO DO
     public void sauvegarder() {
 
     }

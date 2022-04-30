@@ -20,7 +20,7 @@ public class Observable {
         Iterateur<Observateur> iterateur;
         iterateur = observateurs.iterateur();
         while (iterateur.aProchain()) {
-            ((Observateur) iterateur.prochain()).metAJour();
+            ((Observateur) iterateur.prochain()).majInfoPartie();
         }
     }
 

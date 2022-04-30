@@ -119,7 +119,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
         ((Component) gaufreGraphique).addMouseListener(new AdaptateurSouris(gaufreGraphique, collecteurEvenements));
         frame.addKeyListener(new AdaptateurClavier(collecteurEvenements));
 
-        collecteurEvenements.fixerInterfaceUtilisateur(this);
+        // Garde à jour l'interface graphique du controleur
+        collecteurEvenements.fixerInterfaceGraphique(this);
 
         // Un clic sur le bouton de fermeture clos l'application
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -148,7 +149,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         J2L.setText("    J2 : " + J2);
     }
 
-    public void majTaille(){
+    public void majTexteTailleGaufre(){
         taille.setText("Lignes : " + jeu.gaufre().lignes() + "    Colonnes : " + jeu.gaufre().colonnes());
     }
 
@@ -166,7 +167,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
     }
 
     @Override
-    public void metAJour() {
+    public void majInfoPartie() {
         if (jeu.estTermine()) {
             infoFin.setText("Fin de partie !");
             infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
@@ -217,5 +218,4 @@ public class InterfaceGraphique implements Runnable, Observateur {
 		}
         frame.repaint();
 	}
-    
 }
