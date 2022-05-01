@@ -1,6 +1,6 @@
 package Structures;
 
-public interface Sequence<Toto> {
+public interface Sequence<Toto>{
 
     // Insere element en debut de sequence (en premiere position)
     void insereTete(Toto element);

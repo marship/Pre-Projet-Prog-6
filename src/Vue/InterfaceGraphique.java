@@ -2,6 +2,7 @@ package Vue;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -23,7 +24,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
     public JFrame frame;
     public GaufreGraphique gaufreGraphique;
     JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, nbCoup;
-    JButton annuler, refaire, nouvellePartie, suite, save, load;
+    JButton annuler, refaire, nouvellePartie, suite, save, load, histoire;
+    JComboBox<Integer> listeEtapes;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
         jeu = j;
@@ -86,7 +88,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreLaterale.add(Box.createGlue());
 
         // Annuler / Refaire
-        nbCoup = createLabel("Nombres de coups : " + jeu.nbCoup());
+        nbCoup = createLabel("Nombres de joués : " + jeu.nbCoup() + " sur 0");
         barreLaterale.add(nbCoup);
         Box annulerRefaire = Box.createHorizontalBox();
         annuler = creerBouton("<", "annule");
@@ -94,9 +96,19 @@ public class InterfaceGraphique implements Runnable, Observateur {
         // refaire = new BoutonRefaire(">", "refaire", collecteurEvenements, jeu);
         refaire = creerBouton(">", "refaire");
         refaire.setEnabled(false);
+
         annulerRefaire.add(annuler);
         annulerRefaire.add(refaire);
         barreLaterale.add(annulerRefaire);
+        barreLaterale.add(Box.createGlue());
+
+        Box historique = Box.createHorizontalBox();
+        listeEtapes = new JComboBox<>();
+        listeEtapes.addItem(0);
+        histoire = creerBouton("GO !", "histoire");
+        historique.add(listeEtapes);
+        historique.add(histoire);
+        barreLaterale.add(historique);
         barreLaterale.add(Box.createGlue());
 
         // Save et Load
@@ -132,8 +144,18 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.setVisible(true);
     }
 
+    public int destination(){
+        return (int) listeEtapes.getSelectedItem();
+    }
     public void majNbCoup(){
-        nbCoup.setText("Nombres de coups : " + jeu.nbCoup());
+        nbCoup.setText("Nombres de coups joués : " + jeu.nbCoup() + " sur " + jeu.gaufre().tailleHistoire());
+        listeEtapes.removeAllItems();
+        int i = 0;
+        while(i <= jeu.gaufre().tailleHistoire()){
+            System.out.println(i);
+            listeEtapes.addItem(i);
+            i++;
+        }
     }
 
     public void majScore(){
@@ -200,8 +222,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
     public void nouvelle(){
         jeu.scoresZero();
-        majScore();
         jeu.nbCoupZero();
+        majScore();
         majNbCoup();
     }
 

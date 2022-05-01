@@ -190,10 +190,29 @@ public class ControleurMediateur implements CollecteurEvenements {
                 interfaceGraphique.majScore();
                 interfaceGraphique.majJoueurCourant();
                 break;
+            case "histoire":
+                parcours();
             default:
                 return false;
         }
         return true;
+    }
+
+    private void parcours() {
+        int destination = interfaceGraphique.destination();
+        int depart = jeu.nbCoup();
+        if(destination < depart){
+            while(depart != destination){
+                annule();
+                depart--;
+            }
+        }
+        else{
+            while(depart != destination){
+                refaire();
+                depart++;
+            }
+        }
     }
 
     private void viderHistorique() {
