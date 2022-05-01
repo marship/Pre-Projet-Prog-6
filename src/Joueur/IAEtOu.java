@@ -28,44 +28,23 @@ public class IAEtOu extends IA {
         Gaufre gaufre = jeu.gaufre().clone();
         boolean verif = false;
         int nbCoupsPossibles = 1;
-
-        if(quiDoitGagner == 1){
-            int i = 0;
-            int j = 0;
-            while(i < gaufre.lignes()){
-                while(j < gaufre.colonnes()){
-                    if(jeu.estCoupJouable(i, j)){
-                        verif = true;
-                        if(calculJA(gaufre)){
-                            coup = jeu.creerCoup(i, j);
-                            tmp.insereTete(coup);
-                            nbCoupsPossibles++;
-                        }
+        int i = 0;
+        int j = 0;
+        
+        while(i < gaufre.lignes()){
+            while(j < gaufre.colonnes()){
+                if(jeu.estCoupJouable(i, j)){
+                    verif = true;
+                    if(calculJA(gaufre)){
+                        coup = jeu.creerCoup(i, j);
+                        tmp.insereTete(coup);
+                        nbCoupsPossibles++;
                     }
-                    j++;
                 }
-                j = 0;
-                i++;
+                j++;
             }
-        }
-        else{
-            int i = 0;
-            int j = 0;
-            while(i < gaufre.lignes()){
-                while(j < gaufre.colonnes()){
-                    if(jeu.estCoupJouable(i, j)){
-                        verif = true;
-                        if(calculJB(gaufre)){
-                            coup = jeu.creerCoup(i, j);
-                            tmp.insereTete(coup);
-                            nbCoupsPossibles++;
-                        }
-                    }
-                    j++;
-                }
-                j = 0;
-                i++;
-            }
+            j = 0;
+            i++;
         }
 
         if(!verif){
