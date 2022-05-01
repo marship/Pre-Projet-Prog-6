@@ -28,6 +28,8 @@ public class ControleurMediateur implements CollecteurEvenements {
     public void clicSouris(int coupX, int coupY) {
         if (estPositionSourisCorrect(coupX, coupY)) {
             manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
+            jeu.nbCoupPlus();
+            interfaceGraphique.majNbCoup();
             interfaceGraphique.majJoueurCourant();
         } else {
             Configuration.instance().logger().info("Coup hors gaufre !\n");
@@ -111,10 +113,14 @@ public class ControleurMediateur implements CollecteurEvenements {
     void annule() {
         jeu.annule();
         interfaceGraphique.majScore();
+        jeu.nbCoupMoins();
+        interfaceGraphique.majNbCoup();
     }
 
     void refaire() {
         jeu.refaire();
+        jeu.nbCoupPlus();
+        interfaceGraphique.majNbCoup();
     }
 
     void modificationTailleGaufre(int nbLigne, int nbColonne) {
@@ -172,6 +178,8 @@ public class ControleurMediateur implements CollecteurEvenements {
                     majPointScore();
                     gestionMajTailleGaufre(0, 0);
                 }
+                jeu.nbCoupZero();
+                interfaceGraphique.majNbCoup();
                 break;
             case "save":
                 jeu.sauvegarder();

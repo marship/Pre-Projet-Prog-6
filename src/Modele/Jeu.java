@@ -24,7 +24,7 @@ public class Jeu extends Observable {
     int previsualisationX;
     int previsualisationY;
 
-    int J1, J2;
+    int J1, J2, nbCoup;
 
     public Jeu() {
         int nbLignesGaufre = Integer.parseInt(Configuration.instance().lis("Ligne"));
@@ -138,6 +138,22 @@ public class Jeu extends Observable {
         else{
             return J2;
         }
+    }
+
+    public int nbCoup(){
+        return nbCoup;
+    }
+
+    public void nbCoupPlus(){
+        nbCoup++;
+    }
+
+    public void nbCoupMoins(){
+        nbCoup--;
+    }
+
+    public void nbCoupZero(){
+        nbCoup = 0;
     }
 
     // ================================
