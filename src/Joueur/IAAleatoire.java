@@ -17,6 +17,7 @@ public class IAAleatoire extends IA {
     @Override
 	public Sequence<Coup> joue() {
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
+
         Coup coup = null;
 
         int mangeX = random.nextInt(jeu.colonnes());
