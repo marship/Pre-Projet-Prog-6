@@ -27,7 +27,6 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     @Override
     public void clicSouris(int coupX, int coupY) {
-<<<<<<< HEAD
         if (!jeu.estTermine()) {
             if (estPositionSourisCorrect(coupX, coupY)) {
                 if (jeu.estDejaMangee(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false))) {
@@ -36,18 +35,14 @@ public class ControleurMediateur implements CollecteurEvenements {
                 } else {
                     manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
                     interfaceGraphique.majJoueurCourant();
+                    jeu.nbCoupPlus();
+                    interfaceGraphique.majNbCoup();
+                    interfaceGraphique.majJoueurCourant();
                 }
             } else {
                 Configuration.instance().logger().info("Coup hors gaufre !\n");
                 interfaceGraphique.majDejaMangee();
             }
-=======
-        if (estPositionSourisCorrect(coupX, coupY)) {
-            manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
-            jeu.nbCoupPlus();
-            interfaceGraphique.majNbCoup();
-            interfaceGraphique.majJoueurCourant();
->>>>>>> 76b0cf90bbf21abfea0f3c1cd93754e21d912c27
         } else {
             Configuration.instance().logger().info("Fin de la partie !\n");
             interfaceGraphique.majFinPartie();
@@ -131,12 +126,9 @@ public class ControleurMediateur implements CollecteurEvenements {
     void annule() {
         jeu.annule();
         interfaceGraphique.majScore();
-<<<<<<< HEAD
         interfaceGraphique.majAnnule();
-=======
         jeu.nbCoupMoins();
         interfaceGraphique.majNbCoup();
->>>>>>> 76b0cf90bbf21abfea0f3c1cd93754e21d912c27
     }
 
     void refaire() {

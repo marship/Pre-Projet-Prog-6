@@ -22,11 +22,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
     boolean estMaximise;
     public JFrame frame;
     public GaufreGraphique gaufreGraphique;
-<<<<<<< HEAD
-    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur;
-=======
-    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, nbCoup;
->>>>>>> 76b0cf90bbf21abfea0f3c1cd93754e21d912c27
+    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur, nbCoup;
     JButton annuler, refaire, nouvellePartie, suite, save, load;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
