@@ -9,11 +9,13 @@ import Modele.Coup;
 import Modele.Gaufre;
 import Structures.Sequence;
 
-public class IAGP extends IA {
+public class IAEtOu extends IA {
     
     Random random;
+    int quiDoitGagner;
+    Hashtable<String, Gaufre> vu;
 
-    IAGP(ControleurMediateur controleurMediateur) {
+    IAEtOu(ControleurMediateur controleurMediateur) {
         super(controleurMediateur);
         random = new Random();
     }
@@ -22,6 +24,14 @@ public class IAGP extends IA {
 	public Sequence<Coup> joue() {
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
         Coup coup;
+        Gaufre gaufre = jeu.gaufre().clone();
+
+        if(quiDoitGagner == 1){
+            sortie = gagne1(gaufre);
+        }
+        else{
+            sortie = gagne2(gaufre);
+        }
 
         if(!jeu.estCoupJouable(0, 1)){
             coup = jeu.creerCoup(1, 0);
@@ -47,9 +57,46 @@ public class IAGP extends IA {
         return sortie;
     }
 
+    public boolean calcul(Gaufre gaufre){
+        if(gaufre.estTermine()){
+            int joueurCourant = gaufre.joueurCourant() ? 1 : 2;
+            if(joueurCourant == quiDoitGagner){
+                
+            }
+        }
+        return false;
+    }
+
+    private Sequence<Coup> gagne1(Gaufre gaufre) {
+        Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
+        int i = 0;
+        int j = 0;
+        boolean gagne = false;
+        Coup coup;
+        while(i < gaufre.lignes()){
+            while (j < gaufre.colonnes()){
+                gagne = calcul(gaufre);
+                if(gagne){
+                    coup = jeu.creerCoup(i, j);
+                    sortie.insereTete(coup);
+                }
+                j++;
+            }
+            i++;
+        }
+
+        return sortie;
+    }
+
+    private Sequence<Coup> gagne2(Gaufre gaufre) {
+        return null;
+    }
+
     @Override
 	public void initialise() {
 		Configuration.instance().logger().info("Demarrage de l'IA Aleatoire !\n");
+        quiDoitGagner = jeu.getJoueurCourant();
+        vu = new Hashtable<String, Gaufre>();
 	}
 
     @Override

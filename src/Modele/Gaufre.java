@@ -1,6 +1,6 @@
 package Modele;
 
-public class Gaufre extends Historique<Coup> {
+public class Gaufre extends Historique<Coup> implements Cloneable {
 
     int nbLigneGaufre;
     int nbColonnesGaufre;
@@ -150,4 +150,50 @@ public class Gaufre extends Historique<Coup> {
         coup.fixerGaufre(this);
         nouveau(coup);
     }
+
+    // ================================
+    // ========== CLONAGE =============
+    // ================================
+
+    @Override
+	public Gaufre clone() {
+		try {
+			Gaufre resultat = (Gaufre) super.clone();
+
+			//Copie du tableau de cases
+			resultat.grilleGaufre = new int[this.grilleGaufre.length][this.grilleGaufre[0].length];
+
+			int i = 0;
+			while(i < this.grilleGaufre.length)
+			{
+				resultat.grilleGaufre[i] = this.grilleGaufre[i].clone();
+
+				i = i + 1;
+			}
+
+			return resultat;
+		} catch (CloneNotSupportedException e) {
+
+		}
+		return null;
+	}
+
+    public String hash(){
+        String res = "" + joueurCourant;
+        int i = 0;
+        int j = 0;
+        while(i < nbLigneGaufre){
+            while(j < nbColonnesGaufre){
+                res += grilleGaufre[i][j];
+                j++;
+            }
+            j = 0;
+            i++;
+        }
+        
+        return res;
+    }
+
+
+
 }

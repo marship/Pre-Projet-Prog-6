@@ -13,7 +13,6 @@ public class IAAleatoire extends IA {
     
     Random random;
     int quiDoitGagner;
-    Hashtable<String, Gaufre> vu;
 
     IAAleatoire(ControleurMediateur controleurMediateur) {
         super(controleurMediateur);
@@ -41,8 +40,6 @@ public class IAAleatoire extends IA {
     @Override
 	public void initialise() {
 		Configuration.instance().logger().info("Demarrage de l'IA Aleatoire !\n");
-        quiDoitGagner = jeu.getJoueurCourant();
-        vu = new Hashtable<String, Gaufre>();
 	}
 
     @Override
