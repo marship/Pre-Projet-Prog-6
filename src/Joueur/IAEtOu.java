@@ -141,7 +141,7 @@ public class IAEtOu extends IA {
                             return false;
                         }
                         vu.put(suite.hash(), suite);
-                        sortie = sortie && calculJB(suite);
+                        sortie = sortie && calculJA(suite);
                     }
                     j++;
                 }
