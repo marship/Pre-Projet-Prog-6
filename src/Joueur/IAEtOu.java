@@ -22,85 +22,145 @@ public class IAEtOu extends IA {
 
     @Override
 	public Sequence<Coup> joue() {
+        Sequence<Coup> tmp = Configuration.instance().nouvelleSequence();
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
-        Coup coup;
+        Coup coup = null;
         Gaufre gaufre = jeu.gaufre().clone();
+        boolean verif = false;
+        int nbCoupsPossibles = 1;
 
         if(quiDoitGagner == 1){
-            sortie = gagne1(gaufre);
+            int i = 0;
+            int j = 0;
+            while(i < gaufre.lignes()){
+                while(j < gaufre.colonnes()){
+                    if(jeu.estCoupJouable(i, j)){
+                        verif = true;
+                        if(calculJA(gaufre)){
+                            coup = jeu.creerCoup(i, j);
+                            tmp.insereTete(coup);
+                            nbCoupsPossibles++;
+                        }
+                    }
+                    j++;
+                }
+                j = 0;
+                i++;
+            }
         }
         else{
-            sortie = gagne2(gaufre);
+            int i = 0;
+            int j = 0;
+            while(i < gaufre.lignes()){
+                while(j < gaufre.colonnes()){
+                    if(jeu.estCoupJouable(i, j)){
+                        verif = true;
+                        if(calculJB(gaufre)){
+                            coup = jeu.creerCoup(i, j);
+                            tmp.insereTete(coup);
+                            nbCoupsPossibles++;
+                        }
+                    }
+                    j++;
+                }
+                j = 0;
+                i++;
+            }
         }
 
-        if(!jeu.estCoupJouable(0, 1)){
-            coup = jeu.creerCoup(1, 0);
+        if(!verif){
+            return null;
         }
         else{
-            if(!jeu.estCoupJouable(1, 0)){
-                coup = jeu.creerCoup(0, 1);
+            int alea = random.nextInt(nbCoupsPossibles);
+            while(alea != 0){
+                coup = tmp.extraitTete();
+                alea--;
+            }
+            sortie.insereTete(coup);
+            return sortie;
+        }
+    }
+
+    public boolean calculJA(Gaufre gaufre){
+        Coup coup;
+        if(gaufre.estTermine()){
+            if(quiDoitGagner == 1){
+                return true;
             }
             else{
-                int mangeX = random.nextInt(jeu.colonnes()) + 1;
-                int mangeY = random.nextInt(jeu.lignes()) + 1;
-
-                while(!jeu.estCoupJouable(mangeX, mangeY)){
-                    mangeX = random.nextInt(jeu.colonnes()) + 1;
-                    mangeY = random.nextInt(jeu.lignes()) + 1;
+                return false;
+            }
+        }
+        else{
+            int i = 0;
+            int j = 0;
+            boolean sortie = false;
+            while(i < gaufre.lignes()){
+                while (j < gaufre.colonnes()){
+                    if(gaufre.estCoupJouable(i, j)){
+                        coup = jeu.creerCoup(i, j);
+                        Gaufre suite = gaufre.clone();
+                        suite.jouerCoup(coup);
+                        if(vu.containsKey(suite.hash())){
+                            return false;
+                        }
+                        vu.put(suite.hash(), suite);
+                        sortie = sortie || calculJB(suite);
+                    }
+                    j++;
                 }
-                coup = jeu.creerCoup(mangeX, mangeY);
+                i++;
+                j = 0;
             }
+            return sortie;
         }
-        
-        sortie.insereTete(coup);
-        
-        return sortie;
     }
 
-    public boolean calcul(Gaufre gaufre){
-        if(gaufre.estTermine()){
-            int joueurCourant = gaufre.joueurCourant() ? 1 : 2;
-            if(joueurCourant == quiDoitGagner){
-                
-            }
-        }
-        return false;
-    }
-
-    private Sequence<Coup> gagne1(Gaufre gaufre) {
-        Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
-        int i = 0;
-        int j = 0;
-        boolean gagne = false;
+    public boolean calculJB(Gaufre gaufre){
         Coup coup;
-        while(i < gaufre.lignes()){
-            while (j < gaufre.colonnes()){
-                gagne = calcul(gaufre);
-                if(gagne){
-                    coup = jeu.creerCoup(i, j);
-                    sortie.insereTete(coup);
-                }
-                j++;
+        if(gaufre.estTermine()){
+            if(quiDoitGagner == 2){
+                return true;
             }
-            i++;
+            else{
+                return false;
+            }
         }
-
-        return sortie;
-    }
-
-    private Sequence<Coup> gagne2(Gaufre gaufre) {
-        return null;
+        else{
+            int i = 0;
+            int j = 0;
+            boolean sortie = true;
+            while(i < gaufre.lignes()){
+                while (j < gaufre.colonnes()){
+                    if(gaufre.estCoupJouable(i, j)){
+                        coup = jeu.creerCoup(i, j);
+                        Gaufre suite = gaufre.clone();
+                        suite.jouerCoup(coup);
+                        if(vu.containsKey(suite.hash())){
+                            return false;
+                        }
+                        vu.put(suite.hash(), suite);
+                        sortie = sortie && calculJB(suite);
+                    }
+                    j++;
+                }
+                i++;
+                j = 0;
+            }
+            return sortie;
+        }
     }
 
     @Override
 	public void initialise() {
-		Configuration.instance().logger().info("Demarrage de l'IA Aleatoire !\n");
+		Configuration.instance().logger().info("Demarrage de l'IA Et Ou !\n");
         quiDoitGagner = jeu.getJoueurCourant();
         vu = new Hashtable<String, Gaufre>();
 	}
 
     @Override
 	public void finalise() {
-		Configuration.instance().logger().info("Fin de l'IA Aleatoire !\n");
+		Configuration.instance().logger().info("Fin de l'IA Et Ou !\n");
 	}
 }
