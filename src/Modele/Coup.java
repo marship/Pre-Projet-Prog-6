@@ -1,18 +1,17 @@
 package Modele;
 
 import Patterns.Commande;
+import Structures.Iterateur;
 import Structures.Sequence;
 import Global.Configuration;
 
-import java.awt.Point;
-
 public class Coup extends Commande {
 
-    Sequence<Point> bouchee;
+    Sequence<Position> positionBouchee;
     Gaufre gaufre;
 
     Coup() {
-        bouchee = Configuration.instance().nouvelleSequence();
+        positionBouchee = Configuration.instance().nouvelleSequence();
     }
 
     void fixerGaufre(Gaufre g) {
@@ -20,30 +19,38 @@ public class Coup extends Commande {
     }
 
     void mange(int coupX, int coupY) {
-        bouchee.insereQueue(new Point(coupX, coupY));
+        positionBouchee.insereQueue(new Position(coupX, coupY));
     }
 
-    Sequence<Point> bouchees() {
-        return bouchee;
-    }
-
-    void X() {
-        // Iterateur<Point> iterateur = bouchee.iterateur();
-        // while (iterateur.aProchain()) {
-            // Point pointcourant = (Point) iterateur.prochain();
-            // pointcourant.x =
-            // pointcourant.y =
-        // }
+    Sequence<Position> listeBouchees() {
+        return positionBouchee;
     }
 
     @Override
     public void execute() {
-        X();
+        manger(0, 1);
     }
 
     @Override
     public void desexecute() {
-        X();
+        recracher(1, 0);
+    }  
+
+    // Utilisation pour Historique de coups (executer)
+    void manger(int X, int Y) {
+        Iterateur<Position> iterateur = positionBouchee.iterateur();
+        while (iterateur.aProchain()) {
+            Position position = (Position) iterateur.prochain();
+            gaufre.jouerCoupGaufre(position.positionX, position.positionY);
+        }
     }
-    
+
+    // Utilisation pour Historique de coups (desexecute)
+    void recracher(int X, int Y) {
+        Iterateur<Position> iterateur = positionBouchee.iterateur();
+        while (iterateur.aProchain()) {
+            Position position = (Position) iterateur.prochain();
+            gaufre.dejouerCoupGaufre(position.positionX, position.positionY);
+        }
+    }  
 }

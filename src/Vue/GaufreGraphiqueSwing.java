@@ -11,7 +11,7 @@ import java.awt.BasicStroke;
 
 public class GaufreGraphiqueSwing extends JComponent implements GaufreGraphique {
 
-    private static final int EPAISSEUR_BORDURE = 5;
+    private static final int EPAISSEUR_BORDURE = 3;
     int largeur, hauteur;
     Graphics2D drawable;
     VueGaufre vueGaufre;
@@ -72,7 +72,9 @@ public class GaufreGraphiqueSwing extends JComponent implements GaufreGraphique 
     @Override
     public void tracerRectangle(int joueurCourant, int x, int y, int largeurCase, int hauteurCase) {
         drawable.setStroke(new BasicStroke(EPAISSEUR_BORDURE));
-        if (joueurCourant == 1) {
+        if (vueGaufre.masquerPrevisualisationFin()) {
+            drawable.setColor(new Color(58,58,58));
+        } else if (joueurCourant == 1) {
             drawable.setColor(Color.MAGENTA);
         } else {
             drawable.setColor(Color.BLUE);

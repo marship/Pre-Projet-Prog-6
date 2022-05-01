@@ -1,5 +1,6 @@
 package Joueur;
 
+import Controleur.ControleurMediateur;
 import Global.Configuration;
 import Modele.Coup;
 import Modele.Gaufre;
@@ -8,11 +9,15 @@ import Structures.Sequence;
 
 public class IA {
     
-    private Jeu jeu;
-    Gaufre gaufre;
+    ControleurMediateur controleurMediateur;
+    Jeu jeu;
 
-    static IA nouvelle(Jeu j) {
-        IA instance = null;
+    IA (ControleurMediateur c) {
+        controleurMediateur = c;
+    }
+
+    /*
+    IA instance = null;
         String name = Configuration.instance().lis("IA");
         try {
             instance = (IA) ClassLoader.getSystemClassLoader().loadClass(name).newInstance();
@@ -21,7 +26,7 @@ public class IA {
             Configuration.instance().logger().severe("Impossible de trouver l'IA : " + name);
         }
         return instance;
-    }
+    */
 
     final Sequence<Coup> elaboreCoups() {
         return joue();

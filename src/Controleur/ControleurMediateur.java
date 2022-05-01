@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import Global.Configuration;
 import Joueur.IA;
+import Modele.Coup;
 import Modele.Jeu;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceGraphique;
@@ -26,10 +27,11 @@ public class ControleurMediateur implements CollecteurEvenements {
     @Override
     public void clicSouris(int coupX, int coupY) {
         if (estPositionSourisCorrect(coupX, coupY)) {
-            jouerCoup(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
+            manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
             interfaceGraphique.majJoueurCourant();
         } else {
             Configuration.instance().logger().info("Coup hors gaufre !\n");
+            //interfaceGraphique. /////////////
         }
     }
 
@@ -88,8 +90,22 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique.previsualisation(jeu.getJoueurCourant(), coupX, coupY, jeu.largeurPrevisualisation(), jeu.hauteurPrevisualisation());
     }
 
-    void jouerCoup(int coupX, int coupY) {
-        jeu.jouerCoup(coupX, coupY);
+    void manger(int coupX, int coupY) {
+        Coup coup = jeu.creerCoup(coupX, coupY);
+        if (coup != null) {
+            if (jeu.estTermine()) {
+                interfaceGraphique.majInfoPartie(); /////////////
+                jeu.afficherJoueurGagnant();
+            } else if (!jeu.estCoupJouable(coupX, coupY)) {
+                interfaceGraphique.majInfoPartie(); /////////////
+            }
+            jouerCoup(coup);
+            jeu.verificationJoueurGagnant();
+        }
+    }
+
+    void jouerCoup(Coup coup) {
+        jeu.jouerCoup(coup);
     }
 
     // TO DO (faire fonctionner)

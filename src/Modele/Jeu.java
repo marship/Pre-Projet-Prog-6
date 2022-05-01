@@ -35,7 +35,7 @@ public class Jeu extends Observable {
         }
     }
 
-    boolean estCoupJouable(int coupX, int coupY) {
+    public boolean estCoupJouable(int coupX, int coupY) {
         return gaufre.estCoupJouable(coupX, coupY);
     }
 
@@ -43,18 +43,23 @@ public class Jeu extends Observable {
         return dejaMangee;
     }
 
-    public void jouerCoup(int coupX, int coupY) {
+    public Coup creerCoup(int coupX, int coupY) {
+        return gaufre.creerCoup(coupX, coupY);
+    }
+
+    public void jouerCoup(Coup coup) {
         dejaMangee = false;
-        if (!estTermine() && estCoupJouable(coupX, coupY)) {
-            gaufre.jouerCoup(coupX, coupY);
+        if (coup == null) {
+            dejaMangee();
+        } else {
+            gaufre.jouerCoup(coup);
             miseAJour(); // Mise à jour de l'historique des coups
-            verificationJoueurGagnant();
-        } else if (gaufre.estTermine()) {
-            afficherJoueurGagnant();
-        } else if (!estCoupJouable(coupX, coupY)) {
-            dejaMangee = true;
-            Configuration.instance().logger().info("Ce morceau de gaufre a deja ete mangee !\n");
         }
+    }
+
+    public void dejaMangee() {
+        dejaMangee = true;
+        Configuration.instance().logger().info("Ce morceau de gaufre a deja ete mangee !\n");
     }
 
     public int getJoueurCourant() {
@@ -64,6 +69,10 @@ public class Jeu extends Observable {
 
     public void changerJoueurCourant() {
         gaufre.changerJoueur();
+    }
+
+    public boolean estAuDebut() {
+        return gaufre.estAuDebut();
     }
 
     public boolean estTermine() {

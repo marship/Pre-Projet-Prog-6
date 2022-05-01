@@ -9,6 +9,8 @@ public class Gaufre extends Historique<Coup> {
     //  0 : Morceau de gaufre mangeable
     //  1 : Morceau de gaufre empoisonné
     // -1 : Morceau de gaufre déjà mangé
+    //  2 : Morceau de gaufre empoisonné mangé
+    //  3 : Morceau de gaufre sélectionné
     public int[][] grilleGaufre;
     
     public Gaufre(int ligne, int colonne) {
@@ -30,16 +32,71 @@ public class Gaufre extends Historique<Coup> {
     }
 
     public boolean estCoupJouable(int coupX, int coupY) {
-        return grilleGaufre[coupY][coupX] != -1;
+        return ((grilleGaufre[coupY][coupX] == 0) || (grilleGaufre[coupY][coupX] == 1));
     }
 
-    public void jouerCoup(int coupX, int coupY) {
-        for (int i = coupY; i < grilleGaufre.length; i++) {
-            for (int j = coupX; (j < grilleGaufre[i].length) && (grilleGaufre[i][j] != -1); j++) {
-                grilleGaufre[i][j] = -1;
+    public Coup creerCoup(int coupX, int coupY) {
+        Coup resultat = new Coup();
+        if (!estTermine() && estCoupJouable(coupX, coupY)) {
+            resultat.mange(coupX, coupY);
+            return resultat;
+        } else {
+            return null;
+        }
+    }
+
+    public void jouerCoup(Coup coup) {
+        coup.fixerGaufre(this);
+        nouveau(coup);
+    }
+
+    public void jouerCoupGaufre(int positionX, int positionY) {
+        ajoutPrevisualisation(positionX, positionY);
+        if(grilleGaufre[positionY][positionX] == 1) {
+            grilleGaufre[positionY][positionX] = 2;
+        } else {
+            grilleGaufre[positionY][positionX] = 3;
+        }
+        changerJoueur();
+        afficherGaufre();
+    }
+
+    public void dejouerCoupGaufre(int positionX, int positionY) {
+        // Annulation de la case sélectionnée
+        if(grilleGaufre[positionY][positionX] == 2) {
+            grilleGaufre[positionY][positionX] = 1;
+        } else {
+            grilleGaufre[positionY][positionX] = 0;
+        }
+
+        // Reset des zones mangées sauf les cases sélectionnées
+        for (int i = 0; i < grilleGaufre.length; i++) {
+            for (int j = 0; j < grilleGaufre[i].length; j++) {
+                if(grilleGaufre[i][j] == -1) {
+                    grilleGaufre[i][j] = 0;
+                }
+            }
+        }
+
+        // Retracer les prévisualisation précédentes grâce aux cases sélectionnées
+        for (int i = 0; i < grilleGaufre.length; i++) {
+            for (int j = 0; j < grilleGaufre[i].length; j++) {
+                if(grilleGaufre[i][j] == 3) {
+                    ajoutPrevisualisation(j, i);
+                }
             }
         }
         changerJoueur();
+    }
+
+    private void ajoutPrevisualisation(int positionX, int positionY) {
+        for (int i = positionY; i < grilleGaufre.length; i++) {
+            for (int j = positionX; (j < grilleGaufre[i].length) && (grilleGaufre[i][j] != -1); j++) {
+                if(grilleGaufre[i][j] == 0) {
+                    grilleGaufre[i][j] = -1;
+                }
+            }
+        }
     }
 
     public boolean joueurCourant() {
@@ -48,6 +105,19 @@ public class Gaufre extends Historique<Coup> {
 
     void changerJoueur(){
         joueurCourant = !joueurCourant;
+    }
+
+    public boolean estAuDebut() {
+        boolean estAuDebut = true;
+        for (int i = 0; i < grilleGaufre.length; i++) {
+            for (int j = 0; j < grilleGaufre[i].length; j++) {
+                if((grilleGaufre[i][j] != 0) && (grilleGaufre[i][j] != 1)) {
+                    estAuDebut = false;
+                    return estAuDebut;
+                }
+            }
+        }
+        return estAuDebut;
     }
 
     public boolean estTermine() {

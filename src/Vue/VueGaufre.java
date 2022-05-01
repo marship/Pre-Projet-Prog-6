@@ -40,6 +40,18 @@ public class VueGaufre {
         return hauteurCase;
     }
 
+    public boolean masquerPrevisualisation() {
+        return masquerPrevisualisationDebut() || masquerPrevisualisationFin();
+    }
+
+    public boolean masquerPrevisualisationDebut() {
+        return jeu.estAuDebut();
+    }
+
+    public boolean masquerPrevisualisationFin() {
+        return jeu.estTermine();
+    }
+
     public void tracerPrevisualisation() {
         gaufreGraphique.tracerRectangle(jeu.getJoueurCourant(), jeu.previsualisationX(), jeu.previsualisationY(), jeu.largeurPrevisualisation(), jeu.hauteurPrevisualisation());
     }
@@ -66,6 +78,8 @@ public class VueGaufre {
                         gaufreGraphique.tracerImage(imageGaufrePoison, j * largeurCase, i * largeurCase, largeurCase, hauteurCase);
                         break;
 
+                    case 3:
+                    case 2:
                     case -1:
                         gaufreGraphique.tracerImage(imageSol, j * largeurCase, i * largeurCase, largeurCase, hauteurCase);
                         break;

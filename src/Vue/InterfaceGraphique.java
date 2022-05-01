@@ -90,7 +90,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
         Box annulerRefaire = Box.createHorizontalBox();
         annuler = creerBouton("<", "annule");
         annuler.setEnabled(false);
-        refaire = new BoutonRefaire(">", "refaire", collecteurEvenements, jeu);
+        // refaire = new BoutonRefaire(">", "refaire", collecteurEvenements, jeu);
+        refaire = creerBouton(">", "refaire");
         refaire.setEnabled(false);
         annulerRefaire.add(annuler);
         annulerRefaire.add(refaire);
@@ -188,6 +189,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         }
         majJoueurCourant();
         annuler.setEnabled(jeu.gaufre().peutAnnuler());
+        refaire.setEnabled(jeu.gaufre().peutRefaire());
         ((Component) gaufreGraphique).repaint();
     }
 
