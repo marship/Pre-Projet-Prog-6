@@ -1,9 +1,7 @@
 package Joueur;
 
 import Controleur.ControleurMediateur;
-import Global.Configuration;
 import Modele.Coup;
-import Modele.Gaufre;
 import Modele.Jeu;
 import Structures.Sequence;
 

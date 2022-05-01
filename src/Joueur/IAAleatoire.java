@@ -1,12 +1,10 @@
 package Joueur;
 
-import java.util.Hashtable;
 import java.util.Random;
 
 import Controleur.ControleurMediateur;
 import Global.Configuration;
 import Modele.Coup;
-import Modele.Gaufre;
 import Structures.Sequence;
 
 public class IAAleatoire extends IA {
