@@ -111,6 +111,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     // TO DO (faire fonctionner)
     void annule() {
         jeu.annule();
+        interfaceGraphique.majScore();
     }
 
     // TO DO (faire fonctionner)
@@ -129,7 +130,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     void majPointScore() {
-        interfaceGraphique.incrementeScore();
+        jeu.increJ(jeu.getJoueurCourant());
         interfaceGraphique.majScore();
     }
 

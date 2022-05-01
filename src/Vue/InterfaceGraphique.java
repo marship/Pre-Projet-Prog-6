@@ -24,7 +24,6 @@ public class InterfaceGraphique implements Runnable, Observateur {
     public GaufreGraphique gaufreGraphique;
     JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille;
     JButton annuler, refaire, nouvellePartie, suite, save, load;
-    int J1, J2;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
         jeu = j;
@@ -77,9 +76,9 @@ public class InterfaceGraphique implements Runnable, Observateur {
         scores = createLabel("Scores");
         barreLaterale.add(scores);
         Box barreScores = Box.createHorizontalBox();
-        J1L = createLabel("J1 : " + J1);
+        J1L = createLabel("J1 : " + jeu.getJ(1));
         barreScores.add(J1L);
-        J2L = createLabel("   J2 : " + J2);
+        J2L = createLabel("   J2 : " + jeu.getJ(2));
         barreScores.add(J2L);
         barreLaterale.add(barreScores);
         suite = creerBouton("Abandon", "suite");
@@ -132,12 +131,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
     }
 
     public void majScore(){
-        if(J1 > J2){
+        if(jeu.getJ(1) > jeu.getJ(2)){
             J1L.setForeground(new Color(104, 186, 118));
             J2L.setForeground(new Color(255,0,0));
         }
         else{
-            if(J2 > J1){
+            if(jeu.getJ(1) < jeu.getJ(2)){
                 J2L.setForeground(new Color(104, 186, 118));
                 J1L.setForeground(new Color(255,0,0));
             }
@@ -146,8 +145,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
                 J1L.setForeground(new Color(0,0,0));
             }
         }
-        J1L.setText("J1 : " + J1);
-        J2L.setText("    J2 : " + J2);
+        J1L.setText("J1 : " + jeu.getJ(1));
+        J2L.setText("    J2 : " + jeu.getJ(2));
     }
 
     public void majTexteTailleGaufre(){
@@ -194,18 +193,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
     }
 
     public void nouvelle(){
-        J1 = 0;
-        J2 = 0;
+        jeu.scoresZero();
         majScore();
     }
 
     public void incrementeScore(){
-        if(jeu.getJoueurCourant() == 1){
-            J1++;
-        }
-        else{
-            J2++;
-        }
+        jeu.increJ(jeu.getJoueurCourant());
     }
 
     public void basculePleinEcran() {

@@ -15,6 +15,8 @@ public class Jeu extends Observable {
     int previsualisationX;
     int previsualisationY;
 
+    int J1, J2;
+
     public Jeu() {
         int nbLignesGaufre = Integer.parseInt(Configuration.instance().lis("Ligne"));
         int nbColonnesGaufre = Integer.parseInt(Configuration.instance().lis("Colonne"));
@@ -98,6 +100,37 @@ public class Jeu extends Observable {
         return gaufre.colonnes();
     }
 
+    public void scoresZero(){
+        J1 = J2 = 0;
+    }
+
+    public void increJ(int j){
+        if(j == 1){
+            J1++;
+        }
+        else{
+            J2++;
+        }
+    }
+
+    public void baisseJ(int j){
+        if(j == 1){
+            J1--;
+        }
+        else{
+            J2--;
+        }
+    }
+
+    public int getJ(int j){
+        if(j == 1){
+            return J1;
+        }
+        else{
+            return J2;
+        }
+    }
+
     // ================================
     // ======= PREVISUALISATION =======
     // ================================
@@ -140,6 +173,9 @@ public class Jeu extends Observable {
 
     // TO DO (faire fonctionner)
     public Coup annule() {
+        if(estTermine()){
+            baisseJ(getJoueurCourant());
+        }
         Coup coup = gaufre.annuler();
         miseAJour();
         return coup;
