@@ -3,7 +3,6 @@ package Joueur;
 import java.util.Hashtable;
 import java.util.Random;
 
-import Controleur.ControleurMediateur;
 import Global.Configuration;
 import Modele.Coup;
 import Modele.Gaufre;
@@ -13,15 +12,15 @@ public class IAEtOu extends IA {
     
     Random random;
     int quiDoitGagner;
-    Hashtable<String, Gaufre> vu;
+    Hashtable<String, Gaufre> hashTable;
 
-    IAEtOu(ControleurMediateur controleurMediateur) {
-        super(controleurMediateur);
+    IAEtOu() {
         random = new Random();
     }
 
     @Override
 	public Sequence<Coup> joue() {
+
         Sequence<Coup> tmp = Configuration.instance().nouvelleSequence();
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
         Coup coup = null;
@@ -81,10 +80,10 @@ public class IAEtOu extends IA {
                         coup = jeu.creerCoup(i, j);
                         Gaufre suite = gaufre.clone();
                         suite.jouerCoup(coup);
-                        if(vu.containsKey(suite.hash())){
+                        if(hashTable.containsKey(suite.hash())){
                             return false;
                         }
-                        vu.put(suite.hash(), suite);
+                        hashTable.put(suite.hash(), suite);
                         sortie = sortie || calculJB(suite);
                     }
                     j++;
@@ -116,10 +115,10 @@ public class IAEtOu extends IA {
                         coup = jeu.creerCoup(i, j);
                         Gaufre suite = gaufre.clone();
                         suite.jouerCoup(coup);
-                        if(vu.containsKey(suite.hash())){
+                        if(hashTable.containsKey(suite.hash())){
                             return false;
                         }
-                        vu.put(suite.hash(), suite);
+                        hashTable.put(suite.hash(), suite);
                         sortie = sortie && calculJA(suite);
                     }
                     j++;
@@ -135,7 +134,7 @@ public class IAEtOu extends IA {
 	public void initialise() {
 		Configuration.instance().logger().info("Demarrage de l'IA Et Ou !\n");
         quiDoitGagner = jeu.getJoueurCourant();
-        vu = new Hashtable<String, Gaufre>();
+        hashTable = new Hashtable<String, Gaufre>();
 	}
 
     @Override

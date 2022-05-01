@@ -1,8 +1,6 @@
 package Controleur;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -11,6 +9,7 @@ import Global.Configuration;
 import Joueur.IA;
 import Modele.Coup;
 import Modele.Jeu;
+import Structures.Sequence;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceGraphique;
 
@@ -18,6 +17,8 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     InterfaceGraphique interfaceGraphique;
     IA joueurAutomatique;
+    boolean iAActive = false;
+    Sequence<Coup> enAttente;
     Jeu jeu;
     
     public ControleurMediateur(Jeu j) {
@@ -26,14 +27,25 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     @Override
     public void clicSouris(int coupX, int coupY) {
-        if (estPositionSourisCorrect(coupX, coupY)) {
-            manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
-            jeu.nbCoupPlus();
-            interfaceGraphique.majNbCoup();
-            interfaceGraphique.majJoueurCourant();
+        if (!jeu.estTermine()) {
+            if (estPositionSourisCorrect(coupX, coupY)) {
+                if (jeu.estDejaMangee(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false))) {
+                    Configuration.instance().logger().info("Morceau deja mange !\n");
+                    interfaceGraphique.majDejaMangee();
+                } else {
+                    manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
+                    interfaceGraphique.majJoueurCourant();
+                    jeu.nbCoupPlus();
+                    interfaceGraphique.majNbCoup();
+                    interfaceGraphique.majJoueurCourant();
+                }
+            } else {
+                Configuration.instance().logger().info("Coup hors gaufre !\n");
+                interfaceGraphique.majDejaMangee();
+            }
         } else {
-            Configuration.instance().logger().info("Coup hors gaufre !\n");
-            //interfaceGraphique. /////////////
+            Configuration.instance().logger().info("Fin de la partie !\n");
+            interfaceGraphique.majFinPartie();
         }
     }
 
@@ -50,7 +62,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 // Activer Prévisualisation
                 gestionPrevisualisationCoup(coupX, coupY, false);
             } else {
-                Configuration.instance().logger().info("Curseur hors zone !\n");
+                // Configuration.instance().logger().info("Curseur hors zone !\n");
             }
         }
     }
@@ -96,10 +108,11 @@ public class ControleurMediateur implements CollecteurEvenements {
         Coup coup = jeu.creerCoup(coupX, coupY);
         if (coup != null) {
             if (jeu.estTermine()) {
-                interfaceGraphique.majInfoPartie(); /////////////
+                interfaceGraphique.majInfoPartie();
                 jeu.afficherJoueurGagnant();
             } else if (!jeu.estCoupJouable(coupX, coupY)) {
-                interfaceGraphique.majInfoPartie(); /////////////
+                interfaceGraphique.majInfoPartie();
+                interfaceGraphique.majDejaMangee(coupX, coupY);
             }
             jouerCoup(coup);
             jeu.verificationJoueurGagnant();
@@ -113,6 +126,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     void annule() {
         jeu.annule();
         interfaceGraphique.majScore();
+        interfaceGraphique.majAnnule();
         jeu.nbCoupMoins();
         interfaceGraphique.majNbCoup();
     }
@@ -181,6 +195,9 @@ public class ControleurMediateur implements CollecteurEvenements {
                 jeu.nbCoupZero();
                 interfaceGraphique.majNbCoup();
                 break;
+            case "ia":
+                utilisationIA();
+                break;
             case "save":
                 jeu.sauvegarder();
                 break;
@@ -224,20 +241,48 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique = iGraphique;
     }
 
-    // TO DO (faire fonctionner)
+    public void utilisationIA() {
+        iAActive = true;
+        if (joueurAutomatique == null) {
+            joueurAutomatique = IA.nouvelle(jeu);
+
+            if ((enAttente == null) || enAttente.estVide()) {
+                enAttente = joueurAutomatique.elaboreCoups();
+            }
+            if ((enAttente == null) || enAttente.estVide()) {
+                Configuration.instance().logger().severe("Bug : l'IA n'a joue aucun coup");
+            } else {
+                attendreAvantJouer(2);
+                jouerCoup(enAttente.extraitTete());
+            }
+        }
+        if (iAActive) {
+            joueurAutomatique.activeIA();
+        } else {
+            joueurAutomatique.finalise();
+        }
+    }
+
+    private void attendreAvantJouer(int secondes) {
+        try {
+            Thread.sleep(secondes * 1000);
+        } catch (InterruptedException e) {
+            Configuration.instance().logger().severe("Bug Timer : " + e + "\n");
+            e.printStackTrace();
+        }
+    }
+
     public void charge() {
         JFileChooser chooser = new JFileChooser(System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes");
         int returnVal = chooser.showOpenDialog(interfaceGraphique.frame);
         if (returnVal != JFileChooser.APPROVE_OPTION) {
-            JOptionPane.showMessageDialog(null,"Vous n'avez rien sélectionné.");
+            JOptionPane.showMessageDialog(null,"Vous n'avez rien selectionne");
             return;
         }
         jeu.charger(chooser.getSelectedFile().getPath());
     }
 
-    // TO DO
     public void sauvegarder() {
         jeu.sauvegarder();
-
     }
 }

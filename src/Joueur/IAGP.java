@@ -1,27 +1,23 @@
 package Joueur;
 
-import java.util.Hashtable;
 import java.util.Random;
 
-import Controleur.ControleurMediateur;
 import Global.Configuration;
 import Modele.Coup;
-import Modele.Gaufre;
 import Structures.Sequence;
 
 public class IAGP extends IA {
     
     Random random;
 
-    IAGP(ControleurMediateur controleurMediateur) {
-        super(controleurMediateur);
+    IAGP() {
         random = new Random();
     }
 
     @Override
 	public Sequence<Coup> joue() {
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
-        Coup coup;
+        Coup coup = null;
 
         if(!jeu.estCoupJouable(0, 1)){
             coup = jeu.creerCoup(1, 0);
@@ -41,19 +37,17 @@ public class IAGP extends IA {
                 coup = jeu.creerCoup(mangeX, mangeY);
             }
         }
-        
         sortie.insereTete(coup);
-        
         return sortie;
     }
 
     @Override
 	public void initialise() {
-		Configuration.instance().logger().info("Demarrage de l'IA Aleatoire !\n");
+		Configuration.instance().logger().info("Demarrage de l'IA Gangnant/Perdant !\n");
 	}
 
     @Override
 	public void finalise() {
-		Configuration.instance().logger().info("Fin de l'IA Aleatoire !\n");
+		Configuration.instance().logger().info("Fin de l'IA Gangnant/Perdant !\n");
 	}
 }

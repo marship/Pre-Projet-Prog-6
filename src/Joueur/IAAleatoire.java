@@ -1,28 +1,25 @@
 package Joueur;
 
-import java.util.Hashtable;
 import java.util.Random;
 
-import Controleur.ControleurMediateur;
 import Global.Configuration;
 import Modele.Coup;
-import Modele.Gaufre;
 import Structures.Sequence;
 
 public class IAAleatoire extends IA {
     
     Random random;
-    int quiDoitGagner;
 
-    IAAleatoire(ControleurMediateur controleurMediateur) {
-        super(controleurMediateur);
+    IAAleatoire() {
         random = new Random();
     }
 
     @Override
 	public Sequence<Coup> joue() {
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
-        Coup coup;
+
+        Coup coup = null;
+
         int mangeX = random.nextInt(jeu.colonnes());
         int mangeY = random.nextInt(jeu.lignes());
 
@@ -32,9 +29,7 @@ public class IAAleatoire extends IA {
         }
 
         coup = jeu.creerCoup(mangeX, mangeY);
-        
         sortie.insereTete(coup);
-        
         return sortie;
     }
 
