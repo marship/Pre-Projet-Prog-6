@@ -3,6 +3,8 @@ package Vue;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.security.auth.kerberos.KerberosCredMessage;
+
 public class AdaptateurClavier extends KeyAdapter {
 
     CollecteurEvenements collecteurEvenements;
@@ -38,6 +40,8 @@ public class AdaptateurClavier extends KeyAdapter {
             case KeyEvent.VK_ESCAPE:
                 collecteurEvenements.commande("fullscreen");
                 break;
+            case KeyEvent.VK_SPACE:
+                collecteurEvenements.commande("ia");
             default:
                 break;
         }

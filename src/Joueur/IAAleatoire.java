@@ -2,7 +2,6 @@ package Joueur;
 
 import java.util.Random;
 
-import Controleur.ControleurMediateur;
 import Global.Configuration;
 import Modele.Coup;
 import Structures.Sequence;
@@ -10,28 +9,26 @@ import Structures.Sequence;
 public class IAAleatoire extends IA {
     
     Random random;
-    int quiDoitGagner;
 
-    IAAleatoire(ControleurMediateur controleurMediateur) {
-        super(controleurMediateur);
+    IAAleatoire() {
         random = new Random();
     }
 
     @Override
 	public Sequence<Coup> joue() {
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
-        Coup coup;
-        int mangeX = random.nextInt(jeu.colonnes()) + 1;
-        int mangeY = random.nextInt(jeu.lignes()) + 1;
+        Coup coup = null;
+
+        int mangeX = random.nextInt(jeu.colonnes());
+        int mangeY = random.nextInt(jeu.lignes());
 
         while(!jeu.estCoupJouable(mangeX, mangeY)){
-            mangeX = random.nextInt(jeu.colonnes()) + 1;
-            mangeY = random.nextInt(jeu.lignes()) + 1;
+            mangeX = random.nextInt(jeu.colonnes());
+            mangeY = random.nextInt(jeu.lignes());
         }
+
         coup = jeu.creerCoup(mangeX, mangeY);
-        
         sortie.insereTete(coup);
-        
         return sortie;
     }
 

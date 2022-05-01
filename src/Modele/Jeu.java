@@ -15,7 +15,7 @@ import Structures.Sequence;
 public class Jeu extends Observable {
 
     Gaufre gaufre;
-    int joueurGagnant;
+    int joueurGagnant = 0;
     int joueurCourant;
     boolean dejaMangee = false;
 
@@ -76,6 +76,11 @@ public class Jeu extends Observable {
     public int getJoueurCourant() {
         // True = Joueur 1 | False = Joueur 2
         return joueurCourant = gaufre.joueurCourant() ? 1 : 2;
+    }
+
+    public int getJoueurGagnant() {
+        // 0 = Aucun | 1 = Joueur 1 | 2 = Joueur 2
+        return joueurGagnant;
     }
 
     public void changerJoueurCourant() {
@@ -183,6 +188,7 @@ public class Jeu extends Observable {
     public Coup annule() {
         if(estTermine()){
             baisseJ(getJoueurCourant());
+            joueurGagnant = 0;
         }
         Coup coup = gaufre.annuler();
         miseAJour();

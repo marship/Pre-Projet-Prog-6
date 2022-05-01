@@ -156,7 +156,7 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
     }
 
     // ================================
-    // ========== CLONAGE =============
+    // ============ IA ================
     // ================================
 
     @Override

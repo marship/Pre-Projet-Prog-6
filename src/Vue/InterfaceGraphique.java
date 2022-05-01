@@ -163,6 +163,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         } else {
             infoJoueurCourantCouleur.setForeground(Color.BLUE);
         }
+        ((Component) gaufreGraphique).repaint();
     }
 
     public void previsualisation(int joueurCourant, int coupX, int coupY, int largeurPreselection, int hauteurPreselection) {
@@ -192,6 +193,16 @@ public class InterfaceGraphique implements Runnable, Observateur {
         refaire.setEnabled(jeu.gaufre().peutRefaire());
         ((Component) gaufreGraphique).repaint();
         frame.repaint();
+    }
+
+    public void majDejaMangee(int coupX, int coupY) {
+        if (jeu.estDejaMangee(coupX, coupY)) {
+            infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+            infoJoueurCourant.setText(" doit rejouer, case deja mangee !");
+        } else {
+            infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+            infoJoueurCourant.setText(" doit jouer");
+        }
     }
 
     public void nouvelle(){

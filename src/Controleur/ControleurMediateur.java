@@ -9,6 +9,7 @@ import Global.Configuration;
 import Joueur.IA;
 import Modele.Coup;
 import Modele.Jeu;
+import Structures.Sequence;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceGraphique;
 
@@ -16,6 +17,8 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     InterfaceGraphique interfaceGraphique;
     IA joueurAutomatique;
+    boolean iAActive = false;
+    Sequence<Coup> enAttente;
     Jeu jeu;
     
     public ControleurMediateur(Jeu j) {
@@ -35,11 +38,11 @@ public class ControleurMediateur implements CollecteurEvenements {
                 }
             } else {
                 Configuration.instance().logger().info("Coup hors gaufre !\n");
-                interfaceGraphique.majHorsGaufre();
+                interfaceGraphique.majDejaMangee();
             }
         } else {
-            Configuration.instance().logger().info("Fin de partie !\n");
-                interfaceGraphique.majFinPartie();
+            Configuration.instance().logger().info("Fin de la partie !\n");
+            interfaceGraphique.majFinPartie();
         }
     }
 
@@ -106,6 +109,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 jeu.afficherJoueurGagnant();
             } else if (!jeu.estCoupJouable(coupX, coupY)) {
                 interfaceGraphique.majInfoPartie();
+                interfaceGraphique.majDejaMangee(coupX, coupY);
             }
             jouerCoup(coup);
             jeu.verificationJoueurGagnant();
@@ -182,6 +186,9 @@ public class ControleurMediateur implements CollecteurEvenements {
                     gestionMajTailleGaufre(0, 0);
                 }
                 break;
+            case "ia":
+                utilisationIA();
+                break;
             case "save":
                 jeu.sauvegarder();
                 break;
@@ -204,6 +211,37 @@ public class ControleurMediateur implements CollecteurEvenements {
     @Override
     public void fixerInterfaceGraphique(InterfaceGraphique iGraphique) {
         interfaceGraphique = iGraphique;
+    }
+
+    public void utilisationIA() {
+        iAActive = true;
+        if (joueurAutomatique == null) {
+            joueurAutomatique = IA.nouvelle(jeu);
+
+            if ((enAttente == null) || enAttente.estVide()) {
+                enAttente = joueurAutomatique.elaboreCoups();
+            }
+            if ((enAttente == null) || enAttente.estVide()) {
+                Configuration.instance().logger().severe("Bug : l'IA n'a joue aucun coup");
+            } else {
+                attendreAvantJouer(2);
+                jouerCoup(enAttente.extraitTete());
+            }
+        }
+        if (iAActive) {
+            joueurAutomatique.activeIA();
+        } else {
+            joueurAutomatique.finalise();
+        }
+    }
+
+    private void attendreAvantJouer(int secondes) {
+        try {
+            Thread.sleep(secondes * 1000);
+        } catch (InterruptedException e) {
+            Configuration.instance().logger().severe("Bug Timer : " + e + "\n");
+            e.printStackTrace();
+        }
     }
 
     public void charge() {
