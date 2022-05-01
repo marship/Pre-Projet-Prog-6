@@ -22,7 +22,11 @@ public class InterfaceGraphique implements Runnable, Observateur {
     boolean estMaximise;
     public JFrame frame;
     public GaufreGraphique gaufreGraphique;
+<<<<<<< HEAD
     JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur;
+=======
+    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, nbCoup;
+>>>>>>> 76b0cf90bbf21abfea0f3c1cd93754e21d912c27
     JButton annuler, refaire, nouvellePartie, suite, save, load;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
@@ -90,6 +94,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreLaterale.add(Box.createGlue());
 
         // Annuler / Refaire
+        nbCoup = createLabel("Nombres de coups : " + jeu.nbCoup());
+        barreLaterale.add(nbCoup);
         Box annulerRefaire = Box.createHorizontalBox();
         annuler = creerBouton("<", "annule");
         annuler.setEnabled(false);
@@ -132,6 +138,10 @@ public class InterfaceGraphique implements Runnable, Observateur {
         // On fixe la taille et on demarre
         frame.setSize(760, 500);
         frame.setVisible(true);
+    }
+
+    public void majNbCoup(){
+        nbCoup.setText("Nombres de coups : " + jeu.nbCoup());
     }
 
     public void majScore(){
@@ -208,6 +218,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
     public void nouvelle(){
         jeu.scoresZero();
         majScore();
+        jeu.nbCoupZero();
+        majNbCoup();
     }
 
     public void incrementeScore(){
