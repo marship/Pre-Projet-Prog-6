@@ -1,7 +1,15 @@
 package Modele;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import Global.Configuration;
 import Patterns.Observable;
+import Structures.Iterateur;
+import Structures.Sequence;
 
 public class Jeu extends Observable {
 
@@ -188,5 +196,77 @@ public class Jeu extends Observable {
 
     public void viderHistorique() {
         gaufre.viderHistorique();
+    }
+
+    // ================================
+    // ==== SAUVEGARDE CHARGEMENT =====
+    // ================================
+
+    public void sauvegarder(){
+        try {
+            // On récupère la date pour le nom de la sauvegarde
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+            String fic = System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes" + File.separator + dtf.format(LocalDateTime.now()) + ".txt";
+            File f = new File(fic);
+
+            // On fait le fichier
+            if (!f.isFile()){
+                f.createNewFile();
+                System.out.println("Fichier fait");
+            }
+            else{
+                System.out.println("Sauvegarde existe déjà");
+            }
+
+            FileWriter fw = new FileWriter(f);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write("" + getJoueurCourant() + "\r\n"); // On note le joueur courant
+            bw.write("" + J1 + "\r\n"); // On note le score du J1
+            bw.write("" + J2 + "\r\n"); // On note le score du J1
+
+            // Si on veut afficher les linges et colonnes et la grille
+            /*
+            bw.write("" + lignes() + "\r\n");
+            bw.write("" + colonnes() + "\r\n");
+            int i = 0;
+            int j = 0;
+            while(i < lignes()){
+                while(j < colonnes()){
+                    bw.write("" + gaufre.grilleGaufre[i][j]);
+                    j++;
+                }
+                bw.write("\r\n");
+                i++;
+                j = 0;
+            }
+            */
+
+            // Sauvegarde des coups
+            Sequence<Coup> liste = Configuration.instance().nouvelleSequence();
+            Coup coup = null;
+            while( !gaufre().passe.estVide() ){
+                coup = gaufre().passe.extraitTete();
+                liste.insereTete(coup);
+            }
+            coup = null;
+            while( !liste.estVide() ){
+                coup = liste.extraitTete();
+                Iterateur<Position> iterateur = coup.positionBouchee.iterateur();
+                while (iterateur.aProchain()) {
+                    Position position = (Position) iterateur.prochain();
+                    bw.write("" + position.positionX);
+                    bw.write("" + position.positionY);
+                }
+                bw.write("\r\n");
+            }
+            bw.close();
+        }
+        catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    public void charger(String fic){
+        
     }
 }

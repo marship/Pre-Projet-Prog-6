@@ -174,7 +174,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 }
                 break;
             case "save":
-                sauvegarder();
+                jeu.sauvegarder();
                 break;
             case "load":
                 charge();
@@ -203,25 +203,12 @@ public class ControleurMediateur implements CollecteurEvenements {
             JOptionPane.showMessageDialog(null,"Vous n'avez rien sélectionné.");
             return;
         }
-        try {
-            File myObj = new File(chooser.getSelectedFile().getPath());
-            Scanner myReader = new Scanner(myObj);
-            int kijou = Integer.parseInt(myReader.nextLine());
-            int score1 = Integer.parseInt(myReader.nextLine());
-            int score2 = Integer.parseInt(myReader.nextLine());
-            while (myReader.hasNextLine()) {
-                // Jouer et Ajouter les coups
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-        
+        jeu.charger(chooser.getSelectedFile().getPath());
     }
 
     // TO DO
     public void sauvegarder() {
+        jeu.sauvegarder();
 
     }
 }
