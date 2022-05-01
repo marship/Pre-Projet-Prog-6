@@ -9,13 +9,13 @@ import Modele.Coup;
 import Modele.Gaufre;
 import Structures.Sequence;
 
-public class IAAleatoire extends IA {
+public class IAGP extends IA {
     
     Random random;
     int quiDoitGagner;
     Hashtable<String, Gaufre> vu;
 
-    IAAleatoire(ControleurMediateur controleurMediateur) {
+    IAGP(ControleurMediateur controleurMediateur) {
         super(controleurMediateur);
         random = new Random();
     }
@@ -24,14 +24,25 @@ public class IAAleatoire extends IA {
 	public Sequence<Coup> joue() {
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
         Coup coup;
-        int mangeX = random.nextInt(jeu.colonnes()) + 1;
-        int mangeY = random.nextInt(jeu.lignes()) + 1;
 
-        while(!jeu.estCoupJouable(mangeX, mangeY)){
-            mangeX = random.nextInt(jeu.colonnes()) + 1;
-            mangeY = random.nextInt(jeu.lignes()) + 1;
+        if(!jeu.estCoupJouable(0, 1)){
+            coup = jeu.creerCoup(1, 0);
         }
-        coup = jeu.creerCoup(mangeX, mangeY);
+        else{
+            if(!jeu.estCoupJouable(1, 0)){
+                coup = jeu.creerCoup(0, 1);
+            }
+            else{
+                int mangeX = random.nextInt(jeu.colonnes()) + 1;
+                int mangeY = random.nextInt(jeu.lignes()) + 1;
+
+                while(!jeu.estCoupJouable(mangeX, mangeY)){
+                    mangeX = random.nextInt(jeu.colonnes()) + 1;
+                    mangeY = random.nextInt(jeu.lignes()) + 1;
+                }
+                coup = jeu.creerCoup(mangeX, mangeY);
+            }
+        }
         
         sortie.insereTete(coup);
         
