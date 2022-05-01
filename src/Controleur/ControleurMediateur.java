@@ -178,6 +178,9 @@ public class ControleurMediateur implements CollecteurEvenements {
                 break;
             case "load":
                 charge();
+                interfaceGraphique.majTexteTailleGaufre();
+                interfaceGraphique.majScore();
+                interfaceGraphique.majJoueurCourant();
                 break;
             default:
                 return false;
@@ -196,7 +199,6 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     // TO DO (faire fonctionner)
     public void charge() {
-        System.out.println(System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes");
         JFileChooser chooser = new JFileChooser(System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes");
         int returnVal = chooser.showOpenDialog(interfaceGraphique.frame);
         if (returnVal != JFileChooser.APPROVE_OPTION) {

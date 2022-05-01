@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 import Global.Configuration;
 import Patterns.Observable;
@@ -220,14 +221,16 @@ public class Jeu extends Observable {
 
             FileWriter fw = new FileWriter(f);
             BufferedWriter bw = new BufferedWriter(fw);
-            bw.write("" + getJoueurCourant() + "\r\n"); // On note le joueur courant
-            bw.write("" + J1 + "\r\n"); // On note le score du J1
-            bw.write("" + J2 + "\r\n"); // On note le score du J1
+            bw.write("" + getJoueurCourant() + "\n"); // On note le joueur courant
 
-            // Si on veut afficher les linges et colonnes et la grille
+            bw.write("" + J1 + "\n"); // On note le score du J1
+            bw.write("" + J2 + "\n"); // On note le score du J1
+
+            bw.write("" + lignes() + "\n"); // On note les lignes
+            bw.write("" + colonnes() + "\n"); // On note les colonnes
+
+            // Si on veut afficher la grille
             /*
-            bw.write("" + lignes() + "\r\n");
-            bw.write("" + colonnes() + "\r\n");
             int i = 0;
             int j = 0;
             while(i < lignes()){
@@ -254,10 +257,9 @@ public class Jeu extends Observable {
                 Iterateur<Position> iterateur = coup.positionBouchee.iterateur();
                 while (iterateur.aProchain()) {
                     Position position = (Position) iterateur.prochain();
-                    bw.write("" + position.positionX);
-                    bw.write("" + position.positionY);
+                    bw.write("" + position.positionX + "\n");
+                    bw.write("" + position.positionY + "\n");
                 }
-                bw.write("\r\n");
             }
             bw.close();
         }
@@ -267,6 +269,42 @@ public class Jeu extends Observable {
     }
 
     public void charger(String fic){
+        try{
+            Scanner scan = new Scanner(new File(fic));
+
+            int j = Integer.parseInt(scan.nextLine()); // Lecture du joueur courant
+
+            int SJ1 = Integer.parseInt(scan.nextLine()); // Lecture des scores
+            int SJ2 = Integer.parseInt(scan.nextLine());
+
+            int ligne = Integer.parseInt(scan.nextLine()); // Lecture de la taille de la grille
+            int colonne = Integer.parseInt(scan.nextLine());
+
+            gaufre().initialisation(ligne, colonne); // On crée la gauffre
+
+            // On lit et joue tous les coups sauvegardés
+            while (scan.hasNext()){
+                int x = Integer.parseInt(scan.nextLine());
+                int y = Integer.parseInt(scan.nextLine());
+                Coup coup = creerCoup(x, y);
+                jouerCoup(coup);
+            }
+
+            // On met à jour tout ce qui doit être à jour
+            J1 = SJ1;
+            J2 = SJ2;
+            if(j == 1){
+                gaufre().joueurCourant = true;
+            }
+            else{
+                gaufre().joueurCourant = false;
+            }
+            
+            scan.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
         
     }
 }
