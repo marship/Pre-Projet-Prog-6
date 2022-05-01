@@ -44,13 +44,8 @@ public class ControleurMediateur implements CollecteurEvenements {
                 interfaceGraphique.majDejaMangee();
             }
         } else {
-<<<<<<< Updated upstream
             Configuration.instance().logger().info("Fin de la partie !\n");
             interfaceGraphique.majFinPartie();
-=======
-            Configuration.instance().logger().info("Coup hors gaufre !\n");
-            interfaceGraphique.majHorsGaufre();
->>>>>>> Stashed changes
         }
     }
 
@@ -203,9 +198,6 @@ public class ControleurMediateur implements CollecteurEvenements {
             case "ia":
                 utilisationIA();
                 break;
-            case "ia":
-                utilisationIA();
-                break;
             case "save":
                 jeu.sauvegarder();
                 break;
@@ -254,11 +246,6 @@ public class ControleurMediateur implements CollecteurEvenements {
         if (joueurAutomatique == null) {
             joueurAutomatique = IA.nouvelle(jeu);
 
-<<<<<<< Updated upstream
-=======
-
-
->>>>>>> Stashed changes
             if ((enAttente == null) || enAttente.estVide()) {
                 enAttente = joueurAutomatique.elaboreCoups();
             }
@@ -285,10 +272,6 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
     }
 
-<<<<<<< Updated upstream
-=======
-    // TO DO (faire fonctionner)
->>>>>>> Stashed changes
     public void charge() {
         JFileChooser chooser = new JFileChooser(System.getProperty("user.dir") + File.separator + "res" + File.separator + "Sauvegardes");
         int returnVal = chooser.showOpenDialog(interfaceGraphique.frame);

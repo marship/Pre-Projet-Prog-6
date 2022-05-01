@@ -3,8 +3,6 @@ package Vue;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-import javax.security.auth.kerberos.KerberosCredMessage;
-
 public class AdaptateurClavier extends KeyAdapter {
 
     CollecteurEvenements collecteurEvenements;

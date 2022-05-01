@@ -41,15 +41,7 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
     public boolean estCoupJouable(int coupX, int coupY) {
         return ((grilleGaufre[coupY][coupX] == 0) || (grilleGaufre[coupY][coupX] == 1));
     }
-<<<<<<< Updated upstream
     
-=======
-
-    public boolean estDejaMangee(int coupX, int coupY) {
-        return ((grilleGaufre[coupY][coupX] == 3) || (grilleGaufre[coupY][coupX] == -1));
-    }
-
->>>>>>> Stashed changes
     public Coup creerCoup(int coupX, int coupY) {
         Coup resultat = new Coup();
         if (!estTermine() && estCoupJouable(coupX, coupY)) {
