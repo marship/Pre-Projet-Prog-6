@@ -22,7 +22,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
     boolean estMaximise;
     public JFrame frame;
     public GaufreGraphique gaufreGraphique;
-    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille;
+    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur;
     JButton annuler, refaire, nouvellePartie, suite, save, load;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
@@ -67,10 +67,14 @@ public class InterfaceGraphique implements Runnable, Observateur {
         Box barreJoueur = Box.createHorizontalBox();
         infoJoueurCourantCouleur = createLabel("Joueur " + jeu.getJoueurCourant());
         infoJoueurCourant = createLabel(" doit jouer");
+        infoJoueur = createLabel("Coup hors zone effectue");
         majJoueurCourant();
         barreJoueur.add(infoJoueurCourantCouleur);
         barreJoueur.add(infoJoueurCourant);
         barreLaterale.add(barreJoueur);
+        barreLaterale.add(Box.createGlue());
+        barreLaterale.add(infoJoueur);
+        infoJoueur.setVisible(false);
         barreLaterale.add(Box.createGlue());
         infoFin = createLabel(" Partie en cours ... ");
         scores = createLabel("Scores");
@@ -168,6 +172,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
     @Override
     public void majInfoPartie() {
+        infoJoueur.setVisible(false);
         if (jeu.estTermine()) {
             infoFin.setText("Fin de partie !");
             infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
@@ -176,20 +181,17 @@ public class InterfaceGraphique implements Runnable, Observateur {
             majScore();
             suite.setText("Manche Suivante");
         } else {
+            infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+            infoJoueurCourant = createLabel(" doit jouer");
             suite.setText("Abandon");
             infoFin.setText(" Partie en cours ... ");
-            if (jeu.estDejaMangee()) {
-                infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-                infoJoueurCourant.setText(" doit rejouer, case deja mangee !");
-            } else {
-                infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-                infoJoueurCourant.setText(" doit jouer");
-            }
         }
         majJoueurCourant();
+        System.out.println(jeu.getJoueurCourant());
         annuler.setEnabled(jeu.gaufre().peutAnnuler());
         refaire.setEnabled(jeu.gaufre().peutRefaire());
         ((Component) gaufreGraphique).repaint();
+        frame.repaint();
     }
 
     public void nouvelle(){
@@ -199,6 +201,31 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
     public void incrementeScore(){
         jeu.increJ(jeu.getJoueurCourant());
+    }
+
+    public void majAnnule() {
+        infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+        afficherActualiserInfoJeu();
+    }
+
+    public void majHorsGaufre() {
+        infoJoueur.setText("Coup hors zone effectue");
+        afficherActualiserInfoJeu();
+    }
+
+    public void majDejaMangee() {
+        infoJoueur.setText("Morceau deja mangee !");
+        afficherActualiserInfoJeu();
+    }
+
+    public void majFinPartie() {
+        infoJoueur.setText("Fin de la partie !");
+        afficherActualiserInfoJeu();
+    }
+
+    private void afficherActualiserInfoJeu() {
+        infoJoueur.setVisible(true);
+        frame.repaint();
     }
 
     public void basculePleinEcran() {

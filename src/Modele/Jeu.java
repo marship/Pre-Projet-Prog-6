@@ -50,8 +50,8 @@ public class Jeu extends Observable {
         return gaufre.estCoupJouable(coupX, coupY);
     }
 
-    public boolean estDejaMangee() {
-        return dejaMangee;
+    public boolean estDejaMangee(int coupX, int coupY) {
+        return gaufre.estDejaMangee(coupX, coupY);
     }
 
     public Coup creerCoup(int coupX, int coupY) {
