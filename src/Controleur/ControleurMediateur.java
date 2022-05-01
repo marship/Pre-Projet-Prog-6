@@ -108,13 +108,11 @@ public class ControleurMediateur implements CollecteurEvenements {
         jeu.jouerCoup(coup);
     }
 
-    // TO DO (faire fonctionner)
     void annule() {
         jeu.annule();
         interfaceGraphique.majScore();
     }
 
-    // TO DO (faire fonctionner)
     void refaire() {
         jeu.refaire();
     }
@@ -126,6 +124,7 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     void gestionMajTailleGaufre(int nbLigne, int nbColonne) {
         jeu.modifierTailleGauffre(nbLigne, nbColonne);
+        viderHistorique();
         interfaceGraphique.majInfoPartie();
     }
 
@@ -153,11 +152,9 @@ public class ControleurMediateur implements CollecteurEvenements {
                 System.exit(0);
                 break;
             case "annule":
-                // TO DO (faire fonctionner)
                 annule();
                 break;
             case "refaire":
-                // TO DO (faire fonctionner)
                 refaire();
                 break;
             case "fullscreen":
@@ -177,17 +174,19 @@ public class ControleurMediateur implements CollecteurEvenements {
                 }
                 break;
             case "save":
-                // TO DO (faire fonctionner)
                 sauvegarder();
                 break;
             case "load":
-                // TO DO (faire fonctionner)
                 charge();
                 break;
             default:
                 return false;
         }
         return true;
+    }
+
+    private void viderHistorique() {
+        jeu.viderHistorique();
     }
 
     @Override

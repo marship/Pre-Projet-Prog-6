@@ -13,6 +13,11 @@ public class Historique <E extends Commande>{
         futur = Configuration.instance().nouvelleSequence();
     }
 
+    public void viderHistorique() {
+        passe = Configuration.instance().nouvelleSequence();
+        futur = Configuration.instance().nouvelleSequence();
+    }
+
     void nouveau(E commande) {
         passe.insereTete(commande);
         commande.execute();

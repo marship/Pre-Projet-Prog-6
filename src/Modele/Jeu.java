@@ -171,7 +171,6 @@ public class Jeu extends Observable {
     // ========== HISTORIQUE ==========
     // ================================
 
-    // TO DO (faire fonctionner)
     public Coup annule() {
         if(estTermine()){
             baisseJ(getJoueurCourant());
@@ -181,10 +180,13 @@ public class Jeu extends Observable {
         return coup;
     }
 
-    // TO DO (faire fonctionner)
     public Coup refaire() {
         Coup coup = gaufre.refaire();
         miseAJour();
         return coup;
+    }
+
+    public void viderHistorique() {
+        gaufre.viderHistorique();
     }
 }
