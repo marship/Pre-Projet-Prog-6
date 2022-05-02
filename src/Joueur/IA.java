@@ -23,6 +23,18 @@ public abstract class IA {
         return instance;
     }
 
+    public static IA nouvelle(Jeu j, String nom_IA) {
+        IA instance = null;
+        String name = "Joueur." + nom_IA;
+        try {
+            instance = (IA) ClassLoader.getSystemClassLoader().loadClass(name).newInstance();
+            instance.jeu = j;
+        } catch (Exception e) {
+            Configuration.instance().logger().severe("Impossible de trouver l'IA : " + name);
+        }
+        return instance;
+    } 
+
     public final void activeIA() {
         gaufre = jeu.gaufre().clone();
         initialise();

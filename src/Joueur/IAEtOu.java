@@ -142,7 +142,7 @@ public class IAEtOu extends IA {
             int i = 0;
             int j = 0;
             boolean sortie = true;
-            boolean verif = false;
+            // boolean verif = false;
             while(i < gaufre.lignes()){
                 while (j < gaufre.colonnes()){
                     if(gaufre.estCoupJouable(j, i)){

@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButton;
 
 import Global.Configuration;
 import Modele.Jeu;
@@ -37,9 +39,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
     
     // ========= JComponent ===========
     JLabel joueurCourantCouleur, joueurCourantAction, etatPartie, titreScore, scoreJ1, scoreJ2, taille, information, nbCoup, copyright;
-    JButton annuler, refaire, nouvellePartie, abandonMancheSuivante, save, load, historiqueBouton, joueur_un, joueur_deux, aide;
+    JButton annuler, refaire, nouvellePartie, abandonMancheSuivante, save, load, historiqueBouton, aide;
+    JRadioButton joueur_un, joueur_deux;
     public GaufreGraphique gaufreGraphique;
     JComboBox<Integer> listeEtapes;
+    JComboBox<String> choix_adversaire;
+    JDialog param_joueur;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
         jeu = j;
@@ -56,44 +61,51 @@ public class InterfaceGraphique implements Runnable, Observateur {
         // Creation de la fenêtre
         frame = new JFrame("Gaufre Empoisonnée");
 
+        // ================================
+        // =========== Pop Up =============
+        // ================================
+
+        // TO DO
+
+        // Création Pop up (Choix joueur qui débute)
+        param_joueur = new JDialog(frame);
+        param_joueur.setBounds(500, 300, 400, 300);
+        param_joueur.setAlwaysOnTop(true);
+        
+        //choix du 2e joueur (joueur ou IA)
+        Box param_partie = Box.createVerticalBox();
+        param_partie.add(createLabel("Choisissez votre adversaire !", true));
+        param_partie.add(Box.createGlue());
+
+        String[] deuxieme_joueur = {"Joueur 2", "IA Aleatoire", "IA EtOu", "IA GP"};
+        choix_adversaire = creerComboBox(deuxieme_joueur);
+        param_partie.add(choix_adversaire);
+
+        //choix joueur qui commence
+        param_partie.add(createLabel("Qui commence ?", true));
+        Box choix_joueur = Box.createHorizontalBox();
+        ButtonGroup groupe_bouton = new ButtonGroup();  
+        joueur_un = new JRadioButton("joueur 1", true);
+        joueur_deux = new JRadioButton("joueur 2");
+        groupe_bouton.add(joueur_un);
+        groupe_bouton.add(joueur_deux);
+        choix_joueur.add(joueur_un);
+        choix_joueur.add(joueur_deux);
+        param_partie.add(choix_joueur);
+        choix_adversaire.getSelectedItem();
+        JButton commencer = creerBouton("Commencer", "commencer", true);
+        param_partie.add(commencer);
+
+        param_joueur.add(param_partie, BorderLayout.NORTH);
+        param_joueur.setVisible(true);
+
+        // ================================
+        // ====== Création Eléments =======
+        // ================================
+
         // Création de la Gaufre et du Copyright
         gaufreGraphique = new GaufreGraphiqueSwing(jeu);
         copyright = createLabel("Copyright Groupe 5 - Projet Prog6 - 2022", true);
-
-        // Ajout des éléments
-        frame.add((Component) gaufreGraphique);
-        frame.add(copyright, BorderLayout.SOUTH);
-
-        /*
-        // Création Pop up (Choix joueur qui débute)
-        JDialog player_settings = new JDialog(frame);
-        player_settings.setBounds(500, 300, 400, 300);
-
-        //choix du 2e joueur (joueur ou IA)
-        Box choix_adversaire = Box.createVerticalBox();
-        choix_adversaire.add(createLabel("Choisissez votre adversaire !", false));
-        choix_adversaire.add(Box.createGlue());
-
-        String[] deuxieme_joueur = {"Joueur 2", "IAAleatoire", "IAEtOu", "IAGP"};
-        JComboBox<String> adversaire = creerComboBox(deuxieme_joueur);
-        adversaire.setBounds(80, 50, 140, 20);
-        choix_adversaire.add(adversaire);
-
-        //choix joueur qui commence
-        Box choix_joueur = Box.createVerticalBox();
-        choix_joueur.add(createLabel("Qui commence ?", false));
-        choix_joueur.add(Box.createGlue());
-        Box bouton_choix_joueur = Box.createHorizontalBox();
-        joueur_un = creerBouton("joueur 1", "j1");
-        bouton_choix_joueur.add(joueur_un);
-        joueur_deux = creerBouton("joueur 2", "j2");
-        bouton_choix_joueur.add(joueur_deux);
-        choix_joueur.add(bouton_choix_joueur);
-
-        player_settings.add(choix_adversaire, BorderLayout.NORTH);
-        player_settings.add(choix_joueur, BorderLayout.SOUTH);
-        player_settings.setVisible(true);
-        */
 
         // Création Box menu lateral droit
         Box menuLateralDroit = creerBox(true, false);
@@ -120,7 +132,13 @@ public class InterfaceGraphique implements Runnable, Observateur {
                 load = creerBouton("Charger", "load", true);
             aide = creerBouton("Aide", "aide", true);
             nouvellePartie = creerBouton("Nouvelle Partie", "Nouvelle", true);
-        
+
+        // ================================
+        // ======== Ajout Eléments ========
+        // ================================
+
+        frame.add((Component) gaufreGraphique);
+        frame.add(copyright, BorderLayout.SOUTH);
 
         // Ajout des éléments à la Box menu lateral
         menuLateralDroit.add(createLabel(" *** Gaufre Empoisonnée *** ", false));
@@ -193,16 +211,18 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.setVisible(true);
     }
 
+    // TO DO
     private void initialisationAffichage() {
         miseAJourCouleurJoueurCourant(0, true);
         afficherMasquerInfoJoueur(0, false);
     }
 
-    // ???
+    // TO DO
     public int destination(){
         return (int) listeEtapes.getSelectedItem();
     }
 
+    // TO DO
     @Override
     public void majInfoPartie() {
         afficherMasquerInfoJoueur(0, false);
@@ -385,10 +405,18 @@ public class InterfaceGraphique implements Runnable, Observateur {
         return bouton;
     }
 
-    // Création JComboBox
+    // Création JComboBox<Integer>
     private JComboBox<Integer> creerComboBox() {
         JComboBox<Integer> comboBox = new JComboBox<>();
         comboBox.addItem(0);
+        comboBox.addActionListener(new AdaptateurCommande(collecteurEvenements, comboBox.getSelectedItem().toString()));
+        comboBox.setFocusable(false);
+        return comboBox;
+    }
+
+    // Création JComboBox<String>
+    private JComboBox<String> creerComboBox(String[] elements) {
+        JComboBox<String> comboBox = new JComboBox<>();
         comboBox.addActionListener(new AdaptateurCommande(collecteurEvenements, comboBox.getSelectedItem().toString()));
         comboBox.setFocusable(false);
         return comboBox;
