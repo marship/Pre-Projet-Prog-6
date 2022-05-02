@@ -19,22 +19,27 @@ public class IAGP extends IA {
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
         Coup coup = null;
 
-        if(!jeu.estCoupJouable(0, 1)){
-            coup = jeu.creerCoup(1, 0);
+        if(!jeu.estCoupJouable(0, 1) && !jeu.estCoupJouable(1, 0)){
+            coup = jeu.creerCoup(0, 0);
         }
         else{
-            if(!jeu.estCoupJouable(1, 0)){
-                coup = jeu.creerCoup(0, 1);
+            if(!jeu.estCoupJouable(0, 1) && jeu.estCoupJouable(1, 0)){
+                coup = jeu.creerCoup(1, 0);
             }
             else{
-                int mangeX = random.nextInt(jeu.colonnes()) + 1;
-                int mangeY = random.nextInt(jeu.lignes()) + 1;
-
-                while(!jeu.estCoupJouable(mangeX, mangeY)){
-                    mangeX = random.nextInt(jeu.colonnes()) + 1;
-                    mangeY = random.nextInt(jeu.lignes()) + 1;
+                if(!jeu.estCoupJouable(1, 0) && jeu.estCoupJouable(0, 1)){
+                    coup = jeu.creerCoup(0, 1);
                 }
-                coup = jeu.creerCoup(mangeX, mangeY);
+                else{
+                    int mangeX = random.nextInt(jeu.colonnes()) + 1;
+                    int mangeY = random.nextInt(jeu.lignes()) + 1;
+
+                    while(!jeu.estCoupJouable(mangeX, mangeY)){
+                        mangeX = random.nextInt(jeu.colonnes()) + 1;
+                        mangeY = random.nextInt(jeu.lignes()) + 1;
+                    }
+                    coup = jeu.creerCoup(mangeX, mangeY);
+                }
             }
         }
         sortie.insereTete(coup);
