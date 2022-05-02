@@ -17,6 +17,8 @@ import Vue.InterfaceGraphique;
 
 public class ControleurMediateur implements CollecteurEvenements {
 
+    final static double TEMPS_ATTENTE_COUP_IA = 0.5;
+
     // ============ Jeu ===============
     InterfaceGraphique interfaceGraphique;
     Jeu jeu;
@@ -25,8 +27,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     IA joueurAutomatique;
     boolean iaActive = false;
     Sequence<Coup> enAttente;
-    final static double TEMPS_ATTENTE_COUP_IA = 0.5;
-    
+
     public ControleurMediateur(Jeu j) {
         jeu = j;
     }
@@ -54,23 +55,9 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
     }
 
-    private void gestionIA() {
-        if(iaActive){
-            attendreAvantJouer(TEMPS_ATTENTE_COUP_IA);
-            faireJouerIA();
-        }
-    }
-
-    private void miseAJourIHM() {
-        interfaceGraphique.majJoueurCourant();
-        jeu.nbCoupPlus();
-        interfaceGraphique.majNbCoup();
-    }
-
     // ============ Mouvement Souris ================
     @Override
     public void traqueSouris(int coupX, int coupY) {
-        
         if (jeu.estTermine()) {
             // Désactiver Prévisualisation
             gestionPrevisualisationCoup(coupX, coupY, true);
@@ -86,6 +73,21 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
     }
 
+    // TO DO
+    private void gestionIA() {
+        if(iaActive){
+            attendreAvantJouer(TEMPS_ATTENTE_COUP_IA);
+            faireJouerIA();
+        }
+    }
+
+    // TO DO
+    private void miseAJourIHM() {
+        interfaceGraphique.majJoueurCourant();
+        jeu.nbCoupPlus();
+        interfaceGraphique.majNbCoup();
+    }
+
     boolean estPositionSourisCorrect(int coupX, int coupY) {
         return (coupX <= jeu.gaufre().colonnes() * interfaceGraphique.gaufreGraphique.largeurCase()) && (coupY <= jeu.gaufre().lignes() * interfaceGraphique.gaufreGraphique.hauteurCase());
     }
@@ -98,15 +100,15 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
     }
 
-    void gestionPrevisualisationCoup(int coupX, int coupY, boolean reset) {
+    void gestionPrevisualisationCoup(int coupX, int coupY, boolean reinitialisation) {
         int valeurLargeurPrevisualisation = 0;
         int valeurHauteurPrevisualisation = 0;
-        if (!reset) {
-            valeurLargeurPrevisualisation = jeu.gaufre().colonnes() - coupX;
-            valeurHauteurPrevisualisation = jeu.gaufre().lignes() - coupY;
-        } else {
+        if (reinitialisation) {
             coupX = 0;
             coupY = 0;
+        } else {
+            valeurLargeurPrevisualisation = jeu.gaufre().colonnes() - coupX;
+            valeurHauteurPrevisualisation = jeu.gaufre().lignes() - coupY;
         }
         setPrevisualisationCoup(valeurLargeurPrevisualisation, valeurHauteurPrevisualisation, coupX, coupY);
         previsualisationCoup(coupX, coupY);
@@ -123,6 +125,10 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique.previsualisation(jeu.getJoueurCourant(), coupX, coupY, jeu.largeurPrevisualisation(), jeu.hauteurPrevisualisation());
     }
 
+
+
+
+    
     void manger(int coupX, int coupY) {
         Coup coup = jeu.creerCoup(coupX, coupY);
         if (coup != null) {

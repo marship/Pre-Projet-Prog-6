@@ -13,6 +13,7 @@ import Modele.Jeu;
 import Patterns.Observateur;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GraphicsDevice;
@@ -25,7 +26,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
     boolean estMaximise;
     public JFrame frame;
     public GaufreGraphique gaufreGraphique;
-    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur, nbCoup;
+    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur, nbCoup, copyright;
     JButton annuler, refaire, nouvellePartie, suite, save, load, histoire, joueur_un, joueur_deux;
     JComboBox<Integer> listeEtapes;
 
@@ -45,6 +46,15 @@ public class InterfaceGraphique implements Runnable, Observateur {
         return label;
     }
 
+    private JLabel createLabelOpaque(String nomDuLabel) {
+        JLabel label = new JLabel(nomDuLabel);
+        // label.setHorizontalAlignment(JLabel.CENTER);
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        label.setOpaque(true);
+        label.setBackground(Color.WHITE);
+        return label;
+    }
+
     private JButton creerBouton(String string, String commande) {
         JButton bouton = new JButton(string);
         bouton.addActionListener(new AdaptateurCommande(collecteurEvenements, commande));
@@ -59,14 +69,26 @@ public class InterfaceGraphique implements Runnable, Observateur {
         return comboBox;
     }
 
+    private Box creerBox() {
+        return null;
+    }
+
     @Override
     public void run() {
-        // Creation d'une fenetre
+        // Creation de la fenêtre
         frame = new JFrame("Gaufre Empoisonnée");
 
-        // Ajout de notre composant de dessin dans la fenetre
+        // Création de la Gaufre et du Copyright
         gaufreGraphique = new GaufreGraphiqueSwing(jeu);
-        frame.add((Component) gaufreGraphique);
+        copyright = createLabelOpaque("Copyright Groupe 5 - Projet Prog6 - 2022");
+
+        // Création de Box (Gaufre et Copyright)
+        Box gaufreCredit = Box.createVerticalBox();
+        gaufreCredit.add((Component) gaufreGraphique);
+        gaufreCredit.add(copyright);
+        gaufreCredit.setOpaque(true);
+        gaufreCredit.setBackground(Color.WHITE);
+        frame.add(gaufreCredit, BorderLayout.SOUTH);
 
         //Creation du pop up de choix de joueur au début de la partie
         JDialog player_settings = new JDialog(frame);
@@ -173,10 +195,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreLaterale.add(Box.createGlue());
         frame.add(barreLaterale, BorderLayout.LINE_END);
 
-        Box barreInferieure = Box.createHorizontalBox();
-        barreInferieure.add(createLabel("Copyright Groupe 5 - Projet Prog6 - 2022"));
-        frame.add(barreInferieure, BorderLayout.SOUTH);
-
+        // Mise en place des Listeners
         ((Component) gaufreGraphique).addMouseMotionListener(new AdaptateurSourisMouvement(gaufreGraphique, collecteurEvenements));
         ((Component) gaufreGraphique).addMouseListener(new AdaptateurSouris(gaufreGraphique, collecteurEvenements));
         frame.addKeyListener(new AdaptateurClavier(collecteurEvenements));
@@ -184,11 +203,9 @@ public class InterfaceGraphique implements Runnable, Observateur {
         // Garde à jour l'interface graphique du controleur
         collecteurEvenements.fixerInterfaceGraphique(this);
 
-        // Un clic sur le bouton de fermeture clos l'application
+        // Paramètre de la fenêtre
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // On fixe la taille et on demarre
-        frame.setSize(760, 500);
+        frame.setSize(800, 500);
         frame.setVisible(true);
     }
 
