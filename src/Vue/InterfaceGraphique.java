@@ -5,6 +5,8 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JDialog;
+import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 
 import Modele.Jeu;
@@ -24,7 +26,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
     public JFrame frame;
     public GaufreGraphique gaufreGraphique;
     JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur, nbCoup;
-    JButton annuler, refaire, nouvellePartie, suite, save, load, histoire;
+    JButton annuler, refaire, nouvellePartie, suite, save, load, histoire, joueur_un, joueur_deux;
     JComboBox<Integer> listeEtapes;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
@@ -55,6 +57,39 @@ public class InterfaceGraphique implements Runnable, Observateur {
     public void run() {
         // Creation d'une fenetre
         frame = new JFrame("Gaufre Empoisonnée");
+
+        // Ajout de notre composant de dessin dans la fenetre
+        gaufreGraphique = new GaufreGraphiqueSwing(jeu);
+        frame.add((Component) gaufreGraphique);
+
+        //Creation du pop up de choix de joueur au début de la partie
+        JDialog player_settings = new JDialog(frame);
+        player_settings.setBounds(500, 300, 400, 300);
+
+        //choix du 2e joueur (joueur ou IA)
+        Box choix_adversaire = Box.createVerticalBox();
+        choix_adversaire.add(createLabel("Choisissez votre adversaire !"));
+        choix_adversaire.add(Box.createGlue());
+
+        String[] deuxieme_joueur = {"Joueur 2", "IA Aleatoire", "IA Forte"};
+        JComboBox<String> adversaire = new JComboBox<>(deuxieme_joueur);
+        adversaire.setBounds(80, 50, 140, 20);
+        choix_adversaire.add(adversaire);
+
+        //choix joueur qui commence
+        Box choix_joueur = Box.createVerticalBox();
+        choix_joueur.add(createLabel("Qui commence ?"));
+        choix_joueur.add(Box.createGlue());
+        Box bouton_choix_joueur = Box.createHorizontalBox();
+        joueur_un = creerBouton("joueur 1", "j1");
+        bouton_choix_joueur.add(joueur_un);
+        joueur_deux = creerBouton("joueur 2", "j2");
+        bouton_choix_joueur.add(joueur_deux);
+        choix_joueur.add(bouton_choix_joueur);
+
+        player_settings.add(choix_adversaire, BorderLayout.NORTH);
+        player_settings.add(choix_joueur, BorderLayout.SOUTH);
+        player_settings.setVisible(true);
 
         // Ajout de notre composant de dessin dans la fenetre
         gaufreGraphique = new GaufreGraphiqueSwing(jeu);

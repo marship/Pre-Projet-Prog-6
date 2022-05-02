@@ -125,6 +125,10 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
         }
         return estAuDebut;
     }
+    
+    public void init_joueurCourant(boolean p) {
+        joueurCourant = p;
+    }
 
     public boolean estTermine() {
         return grilleGaufre[0][0] != 1;

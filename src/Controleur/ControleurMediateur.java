@@ -161,6 +161,14 @@ public class ControleurMediateur implements CollecteurEvenements {
     @Override
     public boolean commande(String commande) {
         switch (commande) {
+            case "j1":
+                jeu.init_joueurCourant(true);
+                utilisationIA();
+            break;
+            case "j2":
+                jeu.init_joueurCourant(false);
+                utilisationIA();
+                break;
             case "down":
                 modificationTailleGaufre(1, 0);
                 break;

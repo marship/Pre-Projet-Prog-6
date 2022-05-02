@@ -95,6 +95,10 @@ public class Jeu extends Observable {
         return gaufre.estTermine();
     }
 
+    public void init_joueurCourant(boolean p) {
+        gaufre.init_joueurCourant(p);
+    } 
+    
     public void verificationJoueurGagnant() {
         if (estTermine()) {
             joueurGagnant = getJoueurCourant();
