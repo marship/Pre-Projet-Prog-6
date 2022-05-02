@@ -2,9 +2,11 @@ package Vue;
 
 import javax.swing.JComponent;
 
+import Global.Configuration;
 import Modele.Jeu;
 
 import java.awt.Graphics2D;
+import java.io.File;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.BasicStroke;
@@ -80,5 +82,12 @@ public class GaufreGraphiqueSwing extends JComponent implements GaufreGraphique 
             drawable.setColor(Color.BLUE);
         }
         drawable.drawRect(x * largeurCase(), y * hauteurCase(), largeurCase * largeurCase(), hauteurCase * hauteurCase());
+    }
+
+    @Override
+    public void tracerImageAide(int x, int y) {
+        ImageGaufre imageAide = ImageGaufre.getImageGaufre(Configuration.charge("Images" + File.separator  + "gaufreAide.png"));
+        tracerImage(imageAide, x * largeurCase(), y * largeurCase(), largeurCase(), largeurCase());
+        System.out.println("h");
     }
 }
