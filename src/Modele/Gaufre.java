@@ -217,7 +217,12 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
         int j = 0;
         while(i < nbLigneGaufre){
             while(j < nbColonnesGaufre){
-                res += grilleGaufre[i][j];
+                if(grilleGaufre[i][j] == 3){
+                    res += -1;
+                }
+                else{
+                    res += grilleGaufre[i][j];
+                }
                 j++;
             }
             j = 0;
