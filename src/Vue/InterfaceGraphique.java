@@ -111,6 +111,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         param_joueur = new JDialog(frame);
         param_joueur.setBounds(500, 300, 400, 300);
         param_joueur.setAlwaysOnTop(true);
+        
                  
         //choix du 2e joueur (joueur ou IA)
         Box param_partie = Box.createVerticalBox();
@@ -137,7 +138,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         param_partie.add(commencer);
                  
         param_joueur.add(param_partie, BorderLayout.NORTH);
-        ouvrir_PopUp();
+        param_joueur.setVisible(true);
 
         // Ajout de notre composant de dessin dans la fenetre
         gaufreGraphique = new GaufreGraphiqueSwing(jeu);
@@ -355,11 +356,11 @@ public class InterfaceGraphique implements Runnable, Observateur {
         afficherMasquerInfoJoueur(0, true);
     }
     public void ouvrir_PopUp(){
-        frame.setEnabled(false);
+        //frame.setEnabled(false);
         param_joueur.setVisible(true);
     }
     public void fermer_PopUp(){
-        frame.setEnabled(true);
+        //frame.setEnabled(true);
         param_joueur.dispose();
     }
 
