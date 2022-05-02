@@ -109,6 +109,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         Box historique = Box.createHorizontalBox();
         listeEtapes = new JComboBox<>();
         listeEtapes.addItem(0);
+        listeEtapes.setFocusable(false);
         histoire = creerBouton("GO !", "histoire");
         historique.add(listeEtapes);
         historique.add(histoire);
@@ -156,7 +157,6 @@ public class InterfaceGraphique implements Runnable, Observateur {
         listeEtapes.removeAllItems();
         int i = 0;
         while(i <= jeu.gaufre().tailleHistoire()){
-            System.out.println(i);
             listeEtapes.addItem(i);
             i++;
         }
@@ -192,6 +192,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
             infoJoueurCourantCouleur.setForeground(Color.BLUE);
         }
         ((Component) gaufreGraphique).repaint();
+        frame.repaint();
     }
 
     public void previsualisation(int joueurCourant, int coupX, int coupY, int largeurPreselection, int hauteurPreselection) {
@@ -216,7 +217,6 @@ public class InterfaceGraphique implements Runnable, Observateur {
             infoFin.setText(" Partie en cours ... ");
         }
         majJoueurCourant();
-        System.out.println(jeu.getJoueurCourant());
         annuler.setEnabled(jeu.gaufre().peutAnnuler());
         refaire.setEnabled(jeu.gaufre().peutRefaire());
         ((Component) gaufreGraphique).repaint();

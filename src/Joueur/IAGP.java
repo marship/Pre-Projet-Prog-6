@@ -31,12 +31,12 @@ public class IAGP extends IA {
                     coup = jeu.creerCoup(0, 1);
                 }
                 else{
-                    int mangeX = random.nextInt(jeu.colonnes()) + 1;
-                    int mangeY = random.nextInt(jeu.lignes()) + 1;
+                    int mangeX = random.nextInt(jeu.colonnes());
+                    int mangeY = random.nextInt(jeu.lignes());
 
-                    while(!jeu.estCoupJouable(mangeX, mangeY)){
-                        mangeX = random.nextInt(jeu.colonnes()) + 1;
-                        mangeY = random.nextInt(jeu.lignes()) + 1;
+                    while( (mangeX == 0 && mangeY == 0) || !jeu.estCoupJouable(mangeX, mangeY)){
+                        mangeX = random.nextInt(jeu.colonnes());
+                        mangeY = random.nextInt(jeu.lignes());
                     }
                     coup = jeu.creerCoup(mangeX, mangeY);
                 }

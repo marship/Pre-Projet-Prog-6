@@ -65,7 +65,6 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
             grilleGaufre[positionY][positionX] = 3;
         }
         changerJoueur();
-        afficherGaufre();
     }
 
     public void dejouerCoupGaufre(int positionX, int positionY) {
@@ -199,6 +198,7 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
 
 				i = i + 1;
 			}
+            resultat.passe = Configuration.instance().nouvelleSequence();
 
 			return resultat;
 		} catch (CloneNotSupportedException e) {

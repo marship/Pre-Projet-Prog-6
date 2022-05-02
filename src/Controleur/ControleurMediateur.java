@@ -9,6 +9,8 @@ import Global.Configuration;
 import Joueur.IA;
 import Modele.Coup;
 import Modele.Jeu;
+import Modele.Position;
+import Structures.Iterateur;
 import Structures.Sequence;
 import Vue.CollecteurEvenements;
 import Vue.InterfaceGraphique;
@@ -17,7 +19,7 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     InterfaceGraphique interfaceGraphique;
     IA joueurAutomatique;
-    boolean iAActive = false;
+    boolean iaActive = false;
     Sequence<Coup> enAttente;
     Jeu jeu;
     
@@ -37,7 +39,10 @@ public class ControleurMediateur implements CollecteurEvenements {
                     interfaceGraphique.majJoueurCourant();
                     jeu.nbCoupPlus();
                     interfaceGraphique.majNbCoup();
-                    interfaceGraphique.majJoueurCourant();
+                    if(iaActive){
+                        attendreAvantJouer(2);
+                        faireJouerIA();
+                    }
                 }
             } else {
                 Configuration.instance().logger().info("Coup hors gaufre !\n");
@@ -196,7 +201,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 interfaceGraphique.majNbCoup();
                 break;
             case "ia":
-                utilisationIA();
+                activationDesactivationIA();
                 break;
             case "save":
                 jeu.sauvegarder();
@@ -241,26 +246,56 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique = iGraphique;
     }
 
+    public void activationDesactivationIA() {
+        iaActive = !iaActive;
+    }
+
+    private void faireJouerIA() {
+        if (iaActive && !jeu.estTermine()) {
+            utilisationIA();
+            interfaceGraphique.majJoueurCourant();
+        }
+    }
+
     public void utilisationIA() {
-        iAActive = true;
+        
         if (joueurAutomatique == null) {
             joueurAutomatique = IA.nouvelle(jeu);
-
-            if ((enAttente == null) || enAttente.estVide()) {
-                enAttente = joueurAutomatique.elaboreCoups();
-            }
-            if ((enAttente == null) || enAttente.estVide()) {
-                Configuration.instance().logger().severe("Bug : l'IA n'a joue aucun coup");
-            } else {
-                attendreAvantJouer(2);
-                jouerCoup(enAttente.extraitTete());
-            }
-        }
-        if (iAActive) {
             joueurAutomatique.activeIA();
+        }
+
+        if ((enAttente == null) || enAttente.estVide()) {
+            enAttente = joueurAutomatique.elaboreCoups();
+        }
+
+        if ((enAttente == null) || enAttente.estVide()) {
+            Configuration.instance().logger().severe("Bug : l'IA n'a joue aucun coup");
         } else {
+            jouerCoup(enAttente.extraitTete());
+        }
+
+        if (jeu.estTermine()) {
             joueurAutomatique.finalise();
         }
+    }
+
+    private void X() {
+        int coupX = 0;
+        int coupY = 0;
+
+        Coup coup = null;
+        coup = enAttente.extraitTete();
+
+        Iterateur<Position> iterateur = coup.positionBouchee.iterateur();
+        while (iterateur.aProchain()) {
+            Position position = (Position) iterateur.prochain();
+            coupX = position.positionX;
+            coupY = position.positionY;
+        }
+        
+        System.out.println("Mange en (" + coupX + ", " + coupY +")");
+        jouerCoup(coup);
+        // manger(coupX, coupY);
     }
 
     private void attendreAvantJouer(int secondes) {

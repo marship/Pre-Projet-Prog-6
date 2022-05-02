@@ -21,6 +21,7 @@ public class IAEtOu extends IA {
     @Override
 	public Sequence<Coup> joue() {
 
+        quiDoitGagner = jeu.getJoueurCourant();
         Sequence<Coup> tmp = Configuration.instance().nouvelleSequence();
         Sequence<Coup> sortie = Configuration.instance().nouvelleSequence();
         Coup coup = null;
@@ -32,11 +33,14 @@ public class IAEtOu extends IA {
         
         while(i < gaufre.lignes()){
             while(j < gaufre.colonnes()){
-                if(jeu.estCoupJouable(i, j)){
-                    verif = true;
-                    if(calculJA(gaufre)){
-                        coup = jeu.creerCoup(i, j);
+                if(jeu.estCoupJouable(j, i)){
+                    Gaufre g2 = gaufre.clone();
+                    g2.jouerCoupGaufre(j, i);
+                    if(calculJB(g2)){
+                        verif = true;
+                        coup = jeu.creerCoup(j, i);
                         tmp.insereTete(coup);
+                        System.out.println("" + j + " " + i);
                         nbCoupsPossibles++;
                     }
                 }
@@ -47,7 +51,31 @@ public class IAEtOu extends IA {
         }
 
         if(!verif){
-            return null;
+            if(!jeu.estCoupJouable(0, 1) && !jeu.estCoupJouable(1, 0)){
+                coup = jeu.creerCoup(0, 0);
+            }
+            else{
+                if(!jeu.estCoupJouable(0, 1) && jeu.estCoupJouable(1, 0)){
+                    coup = jeu.creerCoup(1, 0);
+                }
+                else{
+                    if(!jeu.estCoupJouable(1, 0) && jeu.estCoupJouable(0, 1)){
+                        coup = jeu.creerCoup(0, 1);
+                    }
+                    else{
+                        int mangeX = random.nextInt(jeu.colonnes());
+                        int mangeY = random.nextInt(jeu.lignes());
+    
+                        while( (mangeX == 0 && mangeY == 0) || !jeu.estCoupJouable(mangeX, mangeY)){
+                            mangeX = random.nextInt(jeu.colonnes());
+                            mangeY = random.nextInt(jeu.lignes());
+                        }
+                        coup = jeu.creerCoup(mangeX, mangeY);
+                    }
+                }
+            }
+            sortie.insereTete(coup);
+            return sortie;
         }
         else{
             int alea = random.nextInt(nbCoupsPossibles);
@@ -64,11 +92,11 @@ public class IAEtOu extends IA {
         Coup coup;
         if(gaufre.estTermine()){
             int joueurCourant = gaufre.joueurCourant() ? 1 : 2;
-            if(quiDoitGagner == joueurCourant){
-                return true;
+            if(quiDoitGagner != joueurCourant){
+                return false;
             }
             else{
-                return false;
+                return true;
             }
         }
         else{
@@ -77,8 +105,8 @@ public class IAEtOu extends IA {
             boolean sortie = false;
             while(i < gaufre.lignes()){
                 while (j < gaufre.colonnes()){
-                    if(gaufre.estCoupJouable(i, j)){
-                        coup = jeu.creerCoup(i, j);
+                    if(gaufre.estCoupJouable(j, i)){
+                        coup = jeu.creerCoup(j, i);
                         Gaufre suite = gaufre.clone();
                         suite.jouerCoup(coup);
                         sortie = sortie || calculJB(suite);
@@ -97,10 +125,10 @@ public class IAEtOu extends IA {
         if(gaufre.estTermine()){
             int joueurCourant = gaufre.joueurCourant() ? 1 : 2;
             if(quiDoitGagner != joueurCourant){
-                return true;
+                return false;
             }
             else{
-                return false;
+                return true;
             }
         }
         else{
@@ -109,8 +137,8 @@ public class IAEtOu extends IA {
             boolean sortie = true;
             while(i < gaufre.lignes()){
                 while (j < gaufre.colonnes()){
-                    if(gaufre.estCoupJouable(i, j)){
-                        coup = jeu.creerCoup(i, j);
+                    if(gaufre.estCoupJouable(j, i)){
+                        coup = jeu.creerCoup(j, i);
                         Gaufre suite = gaufre.clone();
                         suite.jouerCoup(coup);
                         sortie = sortie && calculJA(suite);
@@ -127,7 +155,6 @@ public class IAEtOu extends IA {
     @Override
 	public void initialise() {
 		Configuration.instance().logger().info("Demarrage de l'IA Et Ou !\n");
-        quiDoitGagner = jeu.getJoueurCourant();
         hashTable = new Hashtable<String, Gaufre>();
 	}
 
