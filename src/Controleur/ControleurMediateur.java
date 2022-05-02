@@ -312,6 +312,10 @@ public class ControleurMediateur implements CollecteurEvenements {
             }
         }
         else{
+            Sequence<Coup> s = Configuration.instance().nouvelleSequence();
+            while(!jeu.gaufre().futur.estVide()){
+                s.insereQueue(jeu.gaufre().futur.extraitTete());
+            }
             aide = IA.nouvelle(jeu);
             aide.activeIA();
             if ((aideAttente == null) || aideAttente.estVide()) {
@@ -335,6 +339,9 @@ public class ControleurMediateur implements CollecteurEvenements {
 
             if (jeu.estTermine()) {
                 aide.finalise();
+            }
+            while(!s.estVide()){
+                jeu.gaufre().futur.insereQueue(s.extraitTete());
             }
         }
     }
