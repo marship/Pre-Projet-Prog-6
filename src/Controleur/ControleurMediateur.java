@@ -25,38 +25,49 @@ public class ControleurMediateur implements CollecteurEvenements {
     IA joueurAutomatique;
     boolean iaActive = false;
     Sequence<Coup> enAttente;
+    final static double TEMPS_ATTENTE_COUP_IA = 0.5;
     
     public ControleurMediateur(Jeu j) {
         jeu = j;
     }
 
+    // ============ Clic Souris ================
     @Override
     public void clicSouris(int coupX, int coupY) {
-        if (!jeu.estTermine()) {
+        if (jeu.estTermine()) {
+            interfaceGraphique.afficherMasquerInfoJoueur(3, true);
+            Configuration.instance().logger().info("Fin de partie !\n");
+        } else {
             if (estPositionSourisCorrect(coupX, coupY)) {
                 if (jeu.estDejaMangee(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false))) {
+                    interfaceGraphique.afficherMasquerInfoJoueur(2, true);
                     Configuration.instance().logger().info("Morceau deja mange !\n");
-                    interfaceGraphique.majDejaMangee();
                 } else {
                     manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
-                    interfaceGraphique.majJoueurCourant();
-                    jeu.nbCoupPlus();
-                    interfaceGraphique.majNbCoup();
-                    if(iaActive){
-                        attendreAvantJouer(2);
-                        faireJouerIA();
-                    }
+                    miseAJourIHM();
+                    gestionIA();
                 }
             } else {
+                interfaceGraphique.afficherMasquerInfoJoueur(1, true);
                 Configuration.instance().logger().info("Coup hors gaufre !\n");
-                interfaceGraphique.majDejaMangee();
             }
-        } else {
-            Configuration.instance().logger().info("Fin de la partie !\n");
-            interfaceGraphique.majFinPartie();
         }
     }
 
+    private void gestionIA() {
+        if(iaActive){
+            attendreAvantJouer(TEMPS_ATTENTE_COUP_IA);
+            faireJouerIA();
+        }
+    }
+
+    private void miseAJourIHM() {
+        interfaceGraphique.majJoueurCourant();
+        jeu.nbCoupPlus();
+        interfaceGraphique.majNbCoup();
+    }
+
+    // ============ Mouvement Souris ================
     @Override
     public void traqueSouris(int coupX, int coupY) {
         
@@ -79,8 +90,8 @@ public class ControleurMediateur implements CollecteurEvenements {
         return (coupX <= jeu.gaufre().colonnes() * interfaceGraphique.gaufreGraphique.largeurCase()) && (coupY <= jeu.gaufre().lignes() * interfaceGraphique.gaufreGraphique.hauteurCase());
     }
 
-    int conversionCoordonneeVersCases(int coup, Boolean X) {
-        if (X) {
+    int conversionCoordonneeVersCases(int coup, Boolean estAxeAbcisses) {
+        if (estAxeAbcisses) {
             return coup = (coup / interfaceGraphique.gaufreGraphique.largeurCase());
         } else {
             return coup = (coup / interfaceGraphique.gaufreGraphique.hauteurCase());
@@ -263,6 +274,8 @@ public class ControleurMediateur implements CollecteurEvenements {
         if (iaActive && !jeu.estTermine()) {
             utilisationIA();
             interfaceGraphique.majJoueurCourant();
+            jeu.nbCoupPlus();
+            interfaceGraphique.majNbCoup();
         }
     }
 
@@ -307,9 +320,9 @@ public class ControleurMediateur implements CollecteurEvenements {
         // manger(coupX, coupY);
     }
 
-    private void attendreAvantJouer(int secondes) {
+    private void attendreAvantJouer(Double secondes) {
         try {
-            Thread.sleep(secondes * 1000);
+            Thread.sleep((long) (secondes * 1000));
         } catch (InterruptedException e) {
             Configuration.instance().logger().severe("Bug Timer : " + e + "\n");
             e.printStackTrace();

@@ -154,11 +154,11 @@ public class Jeu extends Observable {
     }
 
     public void nbCoupPlus(){
-        nbCoup++;
+        nbCoup ++;
     }
 
     public void nbCoupMoins(){
-        nbCoup--;
+        nbCoup --;
     }
 
     public void nbCoupZero(){

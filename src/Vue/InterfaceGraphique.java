@@ -8,6 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 
+import Global.Configuration;
 import Modele.Jeu;
 import Patterns.Observateur;
 
@@ -109,14 +110,16 @@ public class InterfaceGraphique implements Runnable, Observateur {
         Box barreJoueur = Box.createHorizontalBox();
         infoJoueurCourantCouleur = createLabel("Joueur " + jeu.getJoueurCourant());
         infoJoueurCourant = createLabel(" doit jouer");
+
         infoJoueur = createLabel("Coup hors zone effectue");
+        afficherMasquerInfoJoueur(0, false);
+
         majJoueurCourant();
         barreJoueur.add(infoJoueurCourantCouleur);
         barreJoueur.add(infoJoueurCourant);
         barreLaterale.add(barreJoueur);
         barreLaterale.add(Box.createGlue());
         barreLaterale.add(infoJoueur);
-        infoJoueur.setVisible(false);
         barreLaterale.add(Box.createGlue());
         infoFin = createLabel(" Partie en cours ... ");
         scores = createLabel("Scores");
@@ -189,6 +192,32 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.setVisible(true);
     }
 
+    public void afficherMasquerInfoJoueur(int option, boolean estVisible) {
+        switch (option) {
+            case 0:
+                // Changer visibilité uniquement
+                break;
+            case 1:
+                // Hors gaufre
+                infoJoueur.setText("Coup hors gaufre !");
+                break;
+            case 2:
+                // Morceau deja mange
+                infoJoueur.setText("Morceau deja mange !");
+                break;
+            case 3:
+                // Fin de partie
+                infoJoueur.setText("Fin de partie !");
+                break;
+            default:
+                // Option inconu
+                Configuration.instance().logger().info("Option pour 'afficherMasquerInfoJoueur' inconu !\n");
+                break;
+        }
+        infoJoueur.setVisible(estVisible);
+        frame.repaint();
+    }
+
     public int destination(){
         return (int) listeEtapes.getSelectedItem();
     }
@@ -231,8 +260,6 @@ public class InterfaceGraphique implements Runnable, Observateur {
         } else {
             infoJoueurCourantCouleur.setForeground(Color.BLUE);
         }
-        ((Component) gaufreGraphique).repaint();
-        frame.repaint();
     }
 
     public void previsualisation(int joueurCourant, int coupX, int coupY, int largeurPreselection, int hauteurPreselection) {
@@ -242,7 +269,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
     @Override
     public void majInfoPartie() {
-        infoJoueur.setVisible(false);
+        afficherMasquerInfoJoueur(0, false);
         if (jeu.estTermine()) {
             infoFin.setText("Fin de partie !");
             infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
@@ -286,27 +313,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
     public void majAnnule() {
         infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-        afficherActualiserInfoJeu();
-    }
-
-    public void majHorsGaufre() {
-        infoJoueur.setText("Coup hors zone effectue");
-        afficherActualiserInfoJeu();
-    }
-
-    public void majDejaMangee() {
-        infoJoueur.setText("Morceau deja mangee !");
-        afficherActualiserInfoJeu();
-    }
-
-    public void majFinPartie() {
-        infoJoueur.setText("Fin de la partie !");
-        afficherActualiserInfoJeu();
-    }
-
-    private void afficherActualiserInfoJeu() {
-        infoJoueur.setVisible(true);
-        frame.repaint();
+        afficherMasquerInfoJoueur(0, true);
     }
 
     public void basculePleinEcran() {
