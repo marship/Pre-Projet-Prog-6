@@ -13,12 +13,19 @@ import Modele.Jeu;
 import Patterns.Observateur;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 public class InterfaceGraphique implements Runnable, Observateur {
+
+    private final static int LARGEUR_ESPACE = 0;
+    private final static int HAUTEUR_ESPACE = 2;
+    private final static Color VERT = new Color(104, 186, 118);
+    private final static Color ROUGE = new Color(255, 0, 0);
+    private final static Color NOIR = new Color(0, 0, 0);
 
     // ============ Jeu ===============
     CollecteurEvenements collecteurEvenements;
@@ -29,8 +36,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
     boolean estMaximise;
     
     // ========= JComponent ===========
-    JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur, nbCoup, copyright;
-    JButton annuler, refaire, nouvellePartie, suite, save, load, histoire, joueur_un, joueur_deux, aide;
+    JLabel joueurCourantCouleur, joueurCourantAction, etatPartie, titreScore, scoreJ1, scoreJ2, taille, information, nbCoup, copyright;
+    JButton annuler, refaire, nouvellePartie, abandonMancheSuivante, save, load, historiqueBouton, joueur_un, joueur_deux, aide;
     public GaufreGraphique gaufreGraphique;
     JComboBox<Integer> listeEtapes;
 
@@ -44,49 +51,6 @@ public class InterfaceGraphique implements Runnable, Observateur {
         SwingUtilities.invokeLater(new InterfaceGraphique(j, cEvenements));
     }
 
-    // Création JLabel
-    private JLabel createLabel(String nomDuLabel, boolean estOpaque) {
-        JLabel label = new JLabel(nomDuLabel);
-        if (estOpaque) {
-            label.setOpaque(true);
-            label.setBackground(Color.WHITE);
-        }
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        return label;
-    }
-
-    // Création JButton
-    private JButton creerBouton(String string, String commande) {
-        JButton bouton = new JButton(string);
-        bouton.addActionListener(new AdaptateurCommande(collecteurEvenements, commande));
-        bouton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        bouton.setFocusable(false);
-        return bouton;
-    }
-
-    // Création JComboBox
-    private JComboBox<String> creerComboBox(String[] items) {
-        JComboBox<String> comboBox = new JComboBox<>(items);
-        comboBox.addActionListener(new AdaptateurCommande(collecteurEvenements, comboBox.getSelectedItem().toString()));
-        return comboBox;
-    }
-
-    // Création Box
-    private Box creerBox(boolean estVerticale, boolean estOpaque) {
-        Box box;
-        if (estVerticale) {
-            box = Box.createVerticalBox();
-        } else {
-            box = Box.createHorizontalBox();
-        }
-
-        if (estOpaque) {
-            box.setOpaque(true);
-            box.setBackground(Color.WHITE);
-        }
-        return box;
-    }
-
     @Override
     public void run() {
         // Creation de la fenêtre
@@ -96,13 +60,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
         gaufreGraphique = new GaufreGraphiqueSwing(jeu);
         copyright = createLabel("Copyright Groupe 5 - Projet Prog6 - 2022", true);
 
-        // Création de Box (Gaufre et Copyright)
-        Box gaufreCredit = creerBox(true, true);
-        gaufreCredit.add((Component) gaufreGraphique);
-        gaufreCredit.add(copyright);
-        frame.add(gaufreCredit, BorderLayout.SOUTH);
+        // Ajout des éléments
+        frame.add((Component) gaufreGraphique);
+        frame.add(copyright, BorderLayout.SOUTH);
 
-        // Création Pop up (choix de joueur au début de la partie)
+        /*
+        // Création Pop up (Choix joueur qui débute)
         JDialog player_settings = new JDialog(frame);
         player_settings.setBounds(500, 300, 400, 300);
 
@@ -130,84 +93,91 @@ public class InterfaceGraphique implements Runnable, Observateur {
         player_settings.add(choix_adversaire, BorderLayout.NORTH);
         player_settings.add(choix_joueur, BorderLayout.SOUTH);
         player_settings.setVisible(true);
+        */
 
-        // Ajout de notre composant de dessin dans la fenetre
-        gaufreGraphique = new GaufreGraphiqueSwing(jeu);
-        frame.add((Component) gaufreGraphique);
+        // Création Box menu lateral droit
+        Box menuLateralDroit = creerBox(true, false);
+            taille = createLabel("Lignes : " + jeu.lignes() + "    Colonnes : " + jeu.colonnes(), false);
+            Box joueurCourant = creerBox(false, false);
+                joueurCourantCouleur = createLabel("Joueur " + jeu.getJoueurCourant(), false);
+                joueurCourantAction = createLabel(" doit jouer", false);
+            information = createLabel("Coup hors zone effectue", false);
+            etatPartie = createLabel(" Partie en cours ... ", false);
+            titreScore = createLabel("Scores", false);
+            Box tableauScore = creerBox(false, false);
+                scoreJ1 = createLabel("J1 : " + jeu.getScoreJoueur(1), false);
+                scoreJ2 = createLabel("   J2 : " + jeu.getScoreJoueur(2), false);
+            abandonMancheSuivante = creerBouton("Abandon", "suite", true);
+            nbCoup = createLabel("Nombres de joués : " + jeu.nbCoup() + " sur 0", false);
+            Box annulerRefaire = creerBox(false, false);
+                annuler = creerBouton("<", "annule", false);
+                refaire = creerBouton(">", "refaire", false);
+            Box historique = creerBox(false, false);
+                listeEtapes = creerComboBox();
+                historiqueBouton = creerBouton("GO !", "histoire", true);
+            Box sauvegardeCharge = creerBox(false, false);
+                save = creerBouton("Sauvegarder", "save", true);
+                load = creerBouton("Charger", "load", true);
+            aide = creerBouton("Aide", "aide", true);
+            nouvellePartie = creerBouton("Nouvelle Partie", "Nouvelle", true);
+        
 
-        // Box
-        Box barreLaterale = Box.createVerticalBox();
-        barreLaterale.add(createLabel(" Gaufre Empoisonnée ", false));
-        taille = createLabel("Lignes : " + jeu.gaufre().lignes() + "    Colonnes : " + jeu.gaufre().colonnes(), false);
-        barreLaterale.add(taille);
-        barreLaterale.add(Box.createGlue());
-        Box barreJoueur = Box.createHorizontalBox();
-        infoJoueurCourantCouleur = createLabel("Joueur " + jeu.getJoueurCourant(), false);
-        infoJoueurCourant = createLabel(" doit jouer", false);
+        // Ajout des éléments à la Box menu lateral
+        menuLateralDroit.add(createLabel(" *** Gaufre Empoisonnée *** ", false));
+        menuLateralDroit.add(Box.createRigidArea(new Dimension(LARGEUR_ESPACE, HAUTEUR_ESPACE)));
+        menuLateralDroit.add(taille);
+        menuLateralDroit.add(Box.createGlue());
 
-        infoJoueur = createLabel("Coup hors zone effectue", false);
-        afficherMasquerInfoJoueur(0, false);
+        joueurCourant.add(joueurCourantCouleur);
+        joueurCourant.add(joueurCourantAction);
+        menuLateralDroit.add(joueurCourant);
+        menuLateralDroit.add(Box.createGlue());
 
-        majJoueurCourant();
-        barreJoueur.add(infoJoueurCourantCouleur);
-        barreJoueur.add(infoJoueurCourant);
-        barreLaterale.add(barreJoueur);
-        barreLaterale.add(Box.createGlue());
-        barreLaterale.add(infoJoueur);
-        barreLaterale.add(Box.createGlue());
-        infoFin = createLabel(" Partie en cours ... ", false);
-        scores = createLabel("Scores", false);
-        barreLaterale.add(scores);
-        Box barreScores = Box.createHorizontalBox();
-        J1L = createLabel("J1 : " + jeu.getJ(1), false);
-        barreScores.add(J1L);
-        J2L = createLabel("   J2 : " + jeu.getJ(2), false);
-        barreScores.add(J2L);
-        barreLaterale.add(barreScores);
-        suite = creerBouton("Abandon", "suite");
-        barreLaterale.add(suite);
-        barreLaterale.add(Box.createGlue());
+        menuLateralDroit.add(information);
+        menuLateralDroit.add(Box.createGlue());
 
-        // Annuler / Refaire
-        nbCoup = createLabel("Nombres de joués : " + jeu.nbCoup() + " sur 0", false);
-        barreLaterale.add(nbCoup);
-        Box annulerRefaire = Box.createHorizontalBox();
-        annuler = creerBouton("<", "annule");
-        annuler.setEnabled(false);
-        // refaire = new BoutonRefaire(">", "refaire", collecteurEvenements, jeu);
-        refaire = creerBouton(">", "refaire");
-        refaire.setEnabled(false);
+        menuLateralDroit.add(etatPartie);
+        menuLateralDroit.add(Box.createGlue());
+
+        menuLateralDroit.add(titreScore);
+        menuLateralDroit.add(Box.createRigidArea(new Dimension(LARGEUR_ESPACE, HAUTEUR_ESPACE)));
+        tableauScore.add(scoreJ1);
+        tableauScore.add(scoreJ2);
+        menuLateralDroit.add(tableauScore);
+        menuLateralDroit.add(Box.createGlue());
+
+        menuLateralDroit.add(abandonMancheSuivante);
+        menuLateralDroit.add(Box.createGlue());
+
+        menuLateralDroit.add(nbCoup);
+        menuLateralDroit.add(Box.createGlue());
 
         annulerRefaire.add(annuler);
         annulerRefaire.add(refaire);
-        barreLaterale.add(annulerRefaire);
-        barreLaterale.add(Box.createGlue());
+        menuLateralDroit.add(annulerRefaire);
+        menuLateralDroit.add(Box.createGlue());
 
-        Box historique = Box.createHorizontalBox();
-        listeEtapes = new JComboBox<>();
-        listeEtapes.addItem(0);
-        listeEtapes.setFocusable(false);
-        histoire = creerBouton("GO !", "histoire");
         historique.add(listeEtapes);
-        historique.add(histoire);
-        barreLaterale.add(historique);
-        barreLaterale.add(Box.createGlue());
+        historique.add(historiqueBouton);
+        menuLateralDroit.add(historique);
+        menuLateralDroit.add(Box.createGlue());
 
-        // Save et Load
-        Box sauvegardeCharge = Box.createHorizontalBox();
-        save = creerBouton("Sauvegarder", "save");
-        load = creerBouton("Charger", "load");
         sauvegardeCharge.add(save);
         sauvegardeCharge.add(load);
-        barreLaterale.add(sauvegardeCharge);
-        barreLaterale.add(Box.createGlue());
+        menuLateralDroit.add(sauvegardeCharge);
+        menuLateralDroit.add(Box.createGlue());
 
-	aide = creerBouton("Aide", "aide");
-        barreLaterale.add(aide);
-        nouvellePartie = creerBouton("Nouvelle Partie", "Nouvelle");
-        barreLaterale.add(nouvellePartie);
-        barreLaterale.add(Box.createGlue());
-        frame.add(barreLaterale, BorderLayout.LINE_END);
+        menuLateralDroit.add(aide);
+        menuLateralDroit.add(Box.createGlue());
+
+        menuLateralDroit.add(nouvellePartie);
+        menuLateralDroit.add(Box.createGlue());
+
+        // Ajout de la Box menu lateral à la fenêtre
+        frame.add(menuLateralDroit, BorderLayout.LINE_END);
+
+        // Initialisation
+        initialisationAffichage();
 
         // Mise en place des Listeners
         ((Component) gaufreGraphique).addMouseMotionListener(new AdaptateurSourisMouvement(gaufreGraphique, collecteurEvenements));
@@ -223,6 +193,98 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.setVisible(true);
     }
 
+    private void initialisationAffichage() {
+        miseAJourCouleurJoueurCourant(0, true);
+        afficherMasquerInfoJoueur(0, false);
+    }
+
+    // ???
+    public int destination(){
+        return (int) listeEtapes.getSelectedItem();
+    }
+
+    @Override
+    public void majInfoPartie() {
+        afficherMasquerInfoJoueur(0, false);
+        if (jeu.estTermine()) {
+            etatPartie.setText("Fin de partie !");
+            miseAJourCouleurJoueurCourant(3, true);
+            incrementerScore();
+            miseAJourTableauScore();
+            abandonMancheSuivante.setText("Manche Suivante");
+        } else {
+            miseAJourCouleurJoueurCourant(1, true);
+            abandonMancheSuivante.setText("Abandon");
+            etatPartie.setText(" Partie en cours ... ");
+        }
+        miseAJourCouleurJoueurCourant(0, true);
+        annuler.setEnabled(jeu.gaufre().peutAnnuler());
+        refaire.setEnabled(jeu.gaufre().peutRefaire());
+        ((Component) gaufreGraphique).repaint();
+        frame.repaint();
+    }
+
+    // ================================
+    // ============ Score =============
+    // ================================
+
+    public void incrementerScore() {
+        jeu.incrementerScoreJoueur(jeu.getJoueurCourant());
+    }
+
+    private void setCouleurScore(Color couleurScoreJ1, Color couleurScoreJ2) {
+        scoreJ1.setForeground(couleurScoreJ1);
+        scoreJ2.setForeground(couleurScoreJ2);
+    }
+
+    public void miseAJourTableauScore() {
+        if(jeu.getScoreJoueur(1) > jeu.getScoreJoueur(2)) {
+            setCouleurScore(VERT, ROUGE);
+        } else if(jeu.getScoreJoueur(1) < jeu.getScoreJoueur(2)) {
+            setCouleurScore(ROUGE, VERT);
+        } else {
+            setCouleurScore(NOIR, NOIR);
+        }
+        scoreJ1.setText("J1 : " + jeu.getScoreJoueur(1));
+        scoreJ2.setText("    J2 : " + jeu.getScoreJoueur(2));
+    }
+
+    // ================================
+    // ====== Previsualisation ========
+    // ================================
+
+    public void previsualisation(int joueurCourant, int coupX, int coupY, int largeurPreselection, int hauteurPreselection) {
+        gaufreGraphique.tracerRectangle(joueurCourant, coupX, coupY, largeurPreselection, hauteurPreselection);
+        ((Component) gaufreGraphique).repaint();
+    }
+
+    // ================================
+    // ====== Fonction Menu Droit =====
+    // ================================
+
+    public void nouvellePartie() {
+        jeu.reinitialiserScore();
+        jeu.miseAZeroNbCoup();
+        miseAJourTableauScore();
+        miseAJourNbCoup();
+    }
+
+    // ================================
+    // ===== MàJ Info Menu Droit ======
+    // ================================
+
+    public void miseAJourInfoTailleGaufre() {
+        taille.setText("Lignes : " + jeu.lignes() + "    Colonnes : " + jeu.colonnes());
+    }
+
+    public void miseAJourNbCoup() {
+        nbCoup.setText("Nombres de coups joues : " + jeu.nbCoup() + " sur " + jeu.tailleHistoirique());
+        listeEtapes.removeAllItems();
+        for (int i = 0; i <= jeu.tailleHistoirique(); i++) {
+            listeEtapes.addItem(i);
+        }
+    }
+
     public void afficherMasquerInfoJoueur(int option, boolean estVisible) {
         switch (option) {
             case 0:
@@ -230,122 +292,60 @@ public class InterfaceGraphique implements Runnable, Observateur {
                 break;
             case 1:
                 // Hors gaufre
-                infoJoueur.setText("Coup hors gaufre !");
+                information.setText("Coup hors gaufre !");
                 break;
             case 2:
                 // Morceau deja mange
-                infoJoueur.setText("Morceau deja mange !");
-                break;
-            case 3:
-                // Fin de partie
-                infoJoueur.setText("Fin de partie !");
+                information.setText("Morceau deja mange !");
                 break;
             default:
                 // Option inconu
                 Configuration.instance().logger().info("Option pour 'afficherMasquerInfoJoueur' inconu !\n");
                 break;
         }
-        infoJoueur.setVisible(estVisible);
+        information.setVisible(estVisible);
         frame.repaint();
     }
 
-    public int destination(){
-        return (int) listeEtapes.getSelectedItem();
-    }
-    public void majNbCoup(){
-        nbCoup.setText("Nombres de coups joués : " + jeu.nbCoup() + " sur " + jeu.gaufre().tailleHistoire());
-        listeEtapes.removeAllItems();
-        int i = 0;
-        while(i <= jeu.gaufre().tailleHistoire()){
-            listeEtapes.addItem(i);
-            i++;
+    public void miseAJourCouleurJoueurCourant(int option, boolean estVisible) {
+        switch (option) {
+            case -1:
+                // Changer visibilité uniquement
+                break;
+            case 0:
+                // Changer couleur joueur courant
+                if (jeu.getJoueurCourant() == 1) {
+                    joueurCourantCouleur.setForeground(Color.MAGENTA);
+                } else {
+                    joueurCourantCouleur.setForeground(Color.BLUE);
+                }
+                break;
+            case 1:
+                // Jouer | Annuler
+                joueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+                joueurCourantAction.setText(" doit jouer");
+                break;
+            case 2:
+                // Morceau deja mange
+                joueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+                joueurCourantAction.setText(" doit rejouer, case deja mangee !");
+                break;
+            case 3:
+                // Gagne
+                joueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
+                joueurCourantAction.setText(" gagne !");
+                break;
+            default:
+                Configuration.instance().logger().info("Option pour 'miseAJourCouleurJoueurCourant' inconu !\n");
+                break;
         }
+        afficherMasquerInfoJoueur(0, estVisible);
+        frame.repaint(); // TO DO
     }
 
-    public void majScore(){
-        if(jeu.getJ(1) > jeu.getJ(2)){
-            J1L.setForeground(new Color(104, 186, 118));
-            J2L.setForeground(new Color(255,0,0));
-        }
-        else{
-            if(jeu.getJ(1) < jeu.getJ(2)){
-                J2L.setForeground(new Color(104, 186, 118));
-                J1L.setForeground(new Color(255,0,0));
-            }
-            else{
-                J2L.setForeground(new Color(0,0,0));
-                J1L.setForeground(new Color(0,0,0));
-            }
-        }
-        J1L.setText("J1 : " + jeu.getJ(1));
-        J2L.setText("    J2 : " + jeu.getJ(2));
-    }
-
-    public void majTexteTailleGaufre(){
-        taille.setText("Lignes : " + jeu.gaufre().lignes() + "    Colonnes : " + jeu.gaufre().colonnes());
-    }
-
-    public void majJoueurCourant() {
-        if (jeu.getJoueurCourant() == 1) {
-            infoJoueurCourantCouleur.setForeground(Color.MAGENTA);
-        } else {
-            infoJoueurCourantCouleur.setForeground(Color.BLUE);
-        }
-    }
-
-    public void previsualisation(int joueurCourant, int coupX, int coupY, int largeurPreselection, int hauteurPreselection) {
-        gaufreGraphique.tracerRectangle(joueurCourant, coupX, coupY, largeurPreselection, hauteurPreselection);
-        ((Component) gaufreGraphique).repaint();
-    }
-
-    @Override
-    public void majInfoPartie() {
-        afficherMasquerInfoJoueur(0, false);
-        if (jeu.estTermine()) {
-            infoFin.setText("Fin de partie !");
-            infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-            infoJoueurCourant.setText(" gagne !");
-            incrementeScore();
-            majScore();
-            suite.setText("Manche Suivante");
-        } else {
-            infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-            infoJoueurCourant = createLabel(" doit jouer", false);
-            suite.setText("Abandon");
-            infoFin.setText(" Partie en cours ... ");
-        }
-        majJoueurCourant();
-        annuler.setEnabled(jeu.gaufre().peutAnnuler());
-        refaire.setEnabled(jeu.gaufre().peutRefaire());
-        ((Component) gaufreGraphique).repaint();
-        frame.repaint();
-    }
-
-    public void majDejaMangee(int coupX, int coupY) {
-        if (jeu.estDejaMangee(coupX, coupY)) {
-            infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-            infoJoueurCourant.setText(" doit rejouer, case deja mangee !");
-        } else {
-            infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-            infoJoueurCourant.setText(" doit jouer");
-        }
-    }
-
-    public void nouvelle(){
-        jeu.scoresZero();
-        jeu.nbCoupZero();
-        majScore();
-        majNbCoup();
-    }
-
-    public void incrementeScore(){
-        jeu.increJ(jeu.getJoueurCourant());
-    }
-
-    public void majAnnule() {
-        infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-        afficherMasquerInfoJoueur(0, true);
-    }
+    // ================================
+    // ============ Frame =============
+    // ================================
 
     public void basculePleinEcran() {
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -359,4 +359,54 @@ public class InterfaceGraphique implements Runnable, Observateur {
 		}
         frame.repaint();
 	}
+
+    // ================================
+    // ====== Création Components =====
+    // ================================
+
+    // Création JLabel
+    private JLabel createLabel(String nomDuLabel, boolean estOpaque) {
+        JLabel label = new JLabel(nomDuLabel);
+        if (estOpaque) {
+            label.setOpaque(true);
+            label.setBackground(Color.WHITE);
+        }
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return label;
+    }
+
+    // Création JButton
+    private JButton creerBouton(String string, String commande, boolean estClicable) {
+        JButton bouton = new JButton(string);
+        bouton.addActionListener(new AdaptateurCommande(collecteurEvenements, commande));
+        bouton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bouton.setEnabled(estClicable);
+        bouton.setFocusable(false);
+        return bouton;
+    }
+
+    // Création JComboBox
+    private JComboBox<Integer> creerComboBox() {
+        JComboBox<Integer> comboBox = new JComboBox<>();
+        comboBox.addItem(0);
+        comboBox.addActionListener(new AdaptateurCommande(collecteurEvenements, comboBox.getSelectedItem().toString()));
+        comboBox.setFocusable(false);
+        return comboBox;
+    }
+
+    // Création Box
+    private Box creerBox(boolean estVerticale, boolean estOpaque) {
+        Box box;
+        if (estVerticale) {
+            box = Box.createVerticalBox();
+        } else {
+            box = Box.createHorizontalBox();
+        }
+
+        if (estOpaque) {
+            box.setOpaque(true);
+            box.setBackground(Color.WHITE);
+        }
+        return box;
+    }
 }

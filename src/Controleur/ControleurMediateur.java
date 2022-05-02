@@ -35,7 +35,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     @Override
     public void clicSouris(int coupX, int coupY) {
         if (jeu.estTermine()) {
-            interfaceGraphique.afficherMasquerInfoJoueur(3, true);
+            interfaceGraphique.afficherMasquerInfoJoueur(0, false);
             Configuration.instance().logger().info("Fin de partie !\n");
         } else {
             if (estPositionSourisCorrect(coupX, coupY)) {
@@ -62,9 +62,9 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     private void miseAJourIHM() {
-        interfaceGraphique.majJoueurCourant();
+        interfaceGraphique.miseAJourCouleurJoueurCourant(0, true);
         jeu.nbCoupPlus();
-        interfaceGraphique.majNbCoup();
+        interfaceGraphique.miseAJourNbCoup();
     }
 
     // ============ Mouvement Souris ================
@@ -131,7 +131,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 jeu.afficherJoueurGagnant();
             } else if (!jeu.estCoupJouable(coupX, coupY)) {
                 interfaceGraphique.majInfoPartie();
-                interfaceGraphique.majDejaMangee(coupX, coupY);
+                interfaceGraphique.miseAJourCouleurJoueurCourant(2, true);
             }
             jouerCoup(coup);
             jeu.verificationJoueurGagnant();
@@ -144,21 +144,21 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     void annule() {
         jeu.annule();
-        interfaceGraphique.majScore();
-        interfaceGraphique.majAnnule();
+        interfaceGraphique.miseAJourTableauScore();
+        interfaceGraphique.miseAJourCouleurJoueurCourant(1, true);
         jeu.nbCoupMoins();
-        interfaceGraphique.majNbCoup();
+        interfaceGraphique.miseAJourNbCoup();
     }
 
     void refaire() {
         jeu.refaire();
         jeu.nbCoupPlus();
-        interfaceGraphique.majNbCoup();
+        interfaceGraphique.miseAJourNbCoup();
     }
 
     void modificationTailleGaufre(int nbLigne, int nbColonne) {
         gestionMajTailleGaufre(nbLigne, nbColonne);
-        interfaceGraphique.majTexteTailleGaufre();
+        interfaceGraphique.miseAJourInfoTailleGaufre();
     }
 
     void gestionMajTailleGaufre(int nbLigne, int nbColonne) {
@@ -168,8 +168,8 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     void majPointScore() {
-        jeu.increJ(jeu.getJoueurCourant());
-        interfaceGraphique.majScore();
+        jeu.incrementerScoreJoueur(jeu.getJoueurCourant());
+        interfaceGraphique.miseAJourTableauScore();
     }
 
     @Override
@@ -209,7 +209,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 break;
             case "Nouvelle":
                 gestionMajTailleGaufre(0, 0);
-                interfaceGraphique.nouvelle();
+                interfaceGraphique.nouvellePartie();
                 break;
             case "suite":
                 if(jeu.estTermine()) {
@@ -219,8 +219,8 @@ public class ControleurMediateur implements CollecteurEvenements {
                     majPointScore();
                     gestionMajTailleGaufre(0, 0);
                 }
-                jeu.nbCoupZero();
-                interfaceGraphique.majNbCoup();
+                jeu.miseAZeroNbCoup();
+                interfaceGraphique.miseAJourNbCoup();
                 break;
             case "ia":
                 activationDesactivationIA();
@@ -230,10 +230,10 @@ public class ControleurMediateur implements CollecteurEvenements {
                 break;
             case "load":
                 charge();
-                interfaceGraphique.majTexteTailleGaufre();
-                interfaceGraphique.majScore();
-                interfaceGraphique.majJoueurCourant();
-                interfaceGraphique.majNbCoup();
+                interfaceGraphique.miseAJourInfoTailleGaufre();
+                interfaceGraphique.miseAJourTableauScore();
+                interfaceGraphique.miseAJourCouleurJoueurCourant(0, true);
+                interfaceGraphique.miseAJourNbCoup();
                 break;
             case "histoire":
                 jeu.gaufre().supprimerAide();
@@ -282,9 +282,9 @@ public class ControleurMediateur implements CollecteurEvenements {
     private void faireJouerIA() {
         if (iaActive && !jeu.estTermine()) {
             utilisationIA(1);
-            interfaceGraphique.majJoueurCourant();
+            interfaceGraphique.miseAJourCouleurJoueurCourant(0, true);
             jeu.nbCoupPlus();
-            interfaceGraphique.majNbCoup();
+            interfaceGraphique.miseAJourNbCoup();
         }
     }
 
@@ -344,25 +344,6 @@ public class ControleurMediateur implements CollecteurEvenements {
                 jeu.gaufre().futur.insereQueue(s.extraitTete());
             }
         }
-    }
-
-    private void X() {
-        int coupX = 0;
-        int coupY = 0;
-
-        Coup coup = null;
-        coup = enAttente.extraitTete();
-
-        Iterateur<Position> iterateur = coup.positionBouchee.iterateur();
-        while (iterateur.aProchain()) {
-            Position position = (Position) iterateur.prochain();
-            coupX = position.positionX;
-            coupY = position.positionY;
-        }
-        
-        System.out.println("Mange en (" + coupX + ", " + coupY +")");
-        jouerCoup(coup);
-        // manger(coupX, coupY);
     }
 
     private void attendreAvantJouer(Double secondes) {

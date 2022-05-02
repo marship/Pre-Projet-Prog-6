@@ -24,7 +24,7 @@ public class Jeu extends Observable {
     int previsualisationX;
     int previsualisationY;
 
-    int J1, J2, nbCoup;
+    int scoreJ1, scoreJ2, nbCoup;
 
     public Jeu() {
         int nbLignesGaufre = Integer.parseInt(Configuration.instance().lis("Ligne"));
@@ -118,34 +118,34 @@ public class Jeu extends Observable {
         return gaufre.colonnes();
     }
 
-    public void scoresZero(){
-        J1 = J2 = 0;
+    public void reinitialiserScore(){
+        scoreJ1 = scoreJ2 = 0;
     }
 
-    public void increJ(int j){
-        if(j == 1){
-            J1++;
+    public void incrementerScoreJoueur(int numJoueur){
+        if(numJoueur == 1){
+            scoreJ1 ++;
         }
         else{
-            J2++;
+            scoreJ2 ++;
         }
     }
 
     public void baisseJ(int j){
         if(j == 1){
-            J1--;
+            scoreJ1 --;
         }
         else{
-            J2--;
+            scoreJ2 --;
         }
     }
 
-    public int getJ(int j){
-        if(j == 1){
-            return J1;
+    public int getScoreJoueur(int numJoueur){
+        if(numJoueur == 1){
+            return scoreJ1;
         }
         else{
-            return J2;
+            return scoreJ2;
         }
     }
 
@@ -153,15 +153,15 @@ public class Jeu extends Observable {
         return nbCoup;
     }
 
-    public void nbCoupPlus(){
+    public void nbCoupPlus() {
         nbCoup ++;
     }
 
-    public void nbCoupMoins(){
+    public void nbCoupMoins() {
         nbCoup --;
     }
 
-    public void nbCoupZero(){
+    public void miseAZeroNbCoup() {
         nbCoup = 0;
     }
 
@@ -249,8 +249,8 @@ public class Jeu extends Observable {
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write("" + getJoueurCourant() + "\n"); // On note le joueur courant
 
-            bw.write("" + J1 + "\n"); // On note le score du J1
-            bw.write("" + J2 + "\n"); // On note le score du J1
+            bw.write("" + scoreJ1 + "\n"); // On note le score du J1
+            bw.write("" + scoreJ2 + "\n"); // On note le score du J1
 
             bw.write("" + lignes() + "\n"); // On note les lignes
             bw.write("" + colonnes() + "\n"); // On note les colonnes
@@ -320,8 +320,8 @@ public class Jeu extends Observable {
             }
 
             // On met à jour tout ce qui doit être à jour
-            J1 = SJ1;
-            J2 = SJ2;
+            scoreJ1 = SJ1;
+            scoreJ2 = SJ2;
             if(j == 1){
                 gaufre().joueurCourant = true;
             }
@@ -335,5 +335,9 @@ public class Jeu extends Observable {
             e.printStackTrace();
         }
         
+    }
+
+    public int tailleHistoirique() {
+        return gaufre.tailleHistoire();
     }
 }
