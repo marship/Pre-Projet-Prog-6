@@ -13,7 +13,6 @@ import Modele.Jeu;
 import Patterns.Observateur;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GraphicsDevice;
@@ -21,13 +20,18 @@ import java.awt.GraphicsEnvironment;
 
 public class InterfaceGraphique implements Runnable, Observateur {
 
-    Jeu jeu;
+    // ============ Jeu ===============
     CollecteurEvenements collecteurEvenements;
-    boolean estMaximise;
+    Jeu jeu;
+
+    // =========== Frame ==============
     public JFrame frame;
-    public GaufreGraphique gaufreGraphique;
+    boolean estMaximise;
+    
+    // ========= JComponent ===========
     JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur, nbCoup, copyright;
     JButton annuler, refaire, nouvellePartie, suite, save, load, histoire, joueur_un, joueur_deux;
+    public GaufreGraphique gaufreGraphique;
     JComboBox<Integer> listeEtapes;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
@@ -40,21 +44,18 @@ public class InterfaceGraphique implements Runnable, Observateur {
         SwingUtilities.invokeLater(new InterfaceGraphique(j, cEvenements));
     }
 
-    private JLabel createLabel(String nomDuLabel) {
+    // Création JLabel
+    private JLabel createLabel(String nomDuLabel, boolean estOpaque) {
         JLabel label = new JLabel(nomDuLabel);
+        if (estOpaque) {
+            label.setOpaque(true);
+            label.setBackground(Color.WHITE);
+        }
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         return label;
     }
 
-    private JLabel createLabelOpaque(String nomDuLabel) {
-        JLabel label = new JLabel(nomDuLabel);
-        // label.setHorizontalAlignment(JLabel.CENTER);
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        label.setOpaque(true);
-        label.setBackground(Color.WHITE);
-        return label;
-    }
-
+    // Création JButton
     private JButton creerBouton(String string, String commande) {
         JButton bouton = new JButton(string);
         bouton.addActionListener(new AdaptateurCommande(collecteurEvenements, commande));
@@ -63,14 +64,27 @@ public class InterfaceGraphique implements Runnable, Observateur {
         return bouton;
     }
 
+    // Création JComboBox
     private JComboBox<String> creerComboBox(String[] items) {
         JComboBox<String> comboBox = new JComboBox<>(items);
         comboBox.addActionListener(new AdaptateurCommande(collecteurEvenements, comboBox.getSelectedItem().toString()));
         return comboBox;
     }
 
-    private Box creerBox() {
-        return null;
+    // Création Box
+    private Box creerBox(boolean estVerticale, boolean estOpaque) {
+        Box box;
+        if (estVerticale) {
+            box = Box.createVerticalBox();
+        } else {
+            box = Box.createHorizontalBox();
+        }
+
+        if (estOpaque) {
+            box.setOpaque(true);
+            box.setBackground(Color.WHITE);
+        }
+        return box;
     }
 
     @Override
@@ -80,23 +94,21 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
         // Création de la Gaufre et du Copyright
         gaufreGraphique = new GaufreGraphiqueSwing(jeu);
-        copyright = createLabelOpaque("Copyright Groupe 5 - Projet Prog6 - 2022");
+        copyright = createLabel("Copyright Groupe 5 - Projet Prog6 - 2022", true);
 
         // Création de Box (Gaufre et Copyright)
-        Box gaufreCredit = Box.createVerticalBox();
+        Box gaufreCredit = creerBox(true, true);
         gaufreCredit.add((Component) gaufreGraphique);
         gaufreCredit.add(copyright);
-        gaufreCredit.setOpaque(true);
-        gaufreCredit.setBackground(Color.WHITE);
         frame.add(gaufreCredit, BorderLayout.SOUTH);
 
-        //Creation du pop up de choix de joueur au début de la partie
+        // Création Pop up (choix de joueur au début de la partie)
         JDialog player_settings = new JDialog(frame);
         player_settings.setBounds(500, 300, 400, 300);
 
         //choix du 2e joueur (joueur ou IA)
         Box choix_adversaire = Box.createVerticalBox();
-        choix_adversaire.add(createLabel("Choisissez votre adversaire !"));
+        choix_adversaire.add(createLabel("Choisissez votre adversaire !", false));
         choix_adversaire.add(Box.createGlue());
 
         String[] deuxieme_joueur = {"Joueur 2", "IAAleatoire", "IAEtOu", "IAGP"};
@@ -106,7 +118,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
         //choix joueur qui commence
         Box choix_joueur = Box.createVerticalBox();
-        choix_joueur.add(createLabel("Qui commence ?"));
+        choix_joueur.add(createLabel("Qui commence ?", false));
         choix_joueur.add(Box.createGlue());
         Box bouton_choix_joueur = Box.createHorizontalBox();
         joueur_un = creerBouton("joueur 1", "j1");
@@ -125,15 +137,15 @@ public class InterfaceGraphique implements Runnable, Observateur {
 
         // Box
         Box barreLaterale = Box.createVerticalBox();
-        barreLaterale.add(createLabel(" Gaufre Empoisonnée "));
-        taille = createLabel("Lignes : " + jeu.gaufre().lignes() + "    Colonnes : " + jeu.gaufre().colonnes());
+        barreLaterale.add(createLabel(" Gaufre Empoisonnée ", false));
+        taille = createLabel("Lignes : " + jeu.gaufre().lignes() + "    Colonnes : " + jeu.gaufre().colonnes(), false);
         barreLaterale.add(taille);
         barreLaterale.add(Box.createGlue());
         Box barreJoueur = Box.createHorizontalBox();
-        infoJoueurCourantCouleur = createLabel("Joueur " + jeu.getJoueurCourant());
-        infoJoueurCourant = createLabel(" doit jouer");
+        infoJoueurCourantCouleur = createLabel("Joueur " + jeu.getJoueurCourant(), false);
+        infoJoueurCourant = createLabel(" doit jouer", false);
 
-        infoJoueur = createLabel("Coup hors zone effectue");
+        infoJoueur = createLabel("Coup hors zone effectue", false);
         afficherMasquerInfoJoueur(0, false);
 
         majJoueurCourant();
@@ -143,13 +155,13 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreLaterale.add(Box.createGlue());
         barreLaterale.add(infoJoueur);
         barreLaterale.add(Box.createGlue());
-        infoFin = createLabel(" Partie en cours ... ");
-        scores = createLabel("Scores");
+        infoFin = createLabel(" Partie en cours ... ", false);
+        scores = createLabel("Scores", false);
         barreLaterale.add(scores);
         Box barreScores = Box.createHorizontalBox();
-        J1L = createLabel("J1 : " + jeu.getJ(1));
+        J1L = createLabel("J1 : " + jeu.getJ(1), false);
         barreScores.add(J1L);
-        J2L = createLabel("   J2 : " + jeu.getJ(2));
+        J2L = createLabel("   J2 : " + jeu.getJ(2), false);
         barreScores.add(J2L);
         barreLaterale.add(barreScores);
         suite = creerBouton("Abandon", "suite");
@@ -157,7 +169,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreLaterale.add(Box.createGlue());
 
         // Annuler / Refaire
-        nbCoup = createLabel("Nombres de joués : " + jeu.nbCoup() + " sur 0");
+        nbCoup = createLabel("Nombres de joués : " + jeu.nbCoup() + " sur 0", false);
         barreLaterale.add(nbCoup);
         Box annulerRefaire = Box.createHorizontalBox();
         annuler = creerBouton("<", "annule");
@@ -296,7 +308,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
             suite.setText("Manche Suivante");
         } else {
             infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
-            infoJoueurCourant = createLabel(" doit jouer");
+            infoJoueurCourant = createLabel(" doit jouer", false);
             suite.setText("Abandon");
             infoFin.setText(" Partie en cours ... ");
         }
