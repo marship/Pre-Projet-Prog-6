@@ -17,11 +17,14 @@ import Vue.InterfaceGraphique;
 
 public class ControleurMediateur implements CollecteurEvenements {
 
+    // ============ Jeu ===============
     InterfaceGraphique interfaceGraphique;
+    Jeu jeu;
+
+    // ============ IA ================
     IA joueurAutomatique;
     boolean iaActive = false;
     Sequence<Coup> enAttente;
-    Jeu jeu;
     
     public ControleurMediateur(Jeu j) {
         jeu = j;
@@ -207,11 +210,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 interfaceGraphique.majNbCoup();
                 break;
             case "ia":
-<<<<<<< HEAD
-                utilisationIA(commande);
-=======
                 activationDesactivationIA();
->>>>>>> 936646ae4e4959a80329f2e2a03a8727b650247e
                 break;
             case "save":
                 jeu.sauvegarder();
@@ -256,24 +255,6 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique = iGraphique;
     }
 
-<<<<<<< HEAD
-    public void utilisationIA(String nom_ia) {
-        iAActive = true;
-
-        if (joueurAutomatique == null) {
-            
-            joueurAutomatique = IA.nouvelle(jeu, nom_ia);
-            
-            if ((enAttente == null) || enAttente.estVide()) {
-                enAttente = joueurAutomatique.elaboreCoups();
-            }
-            if ((enAttente == null) || enAttente.estVide()) {
-                Configuration.instance().logger().severe("Bug : l'IA n'a joue aucun coup");
-            } else {
-                attendreAvantJouer(2);
-                jouerCoup(enAttente.extraitTete());
-            }
-=======
     public void activationDesactivationIA() {
         iaActive = !iaActive;
     }
@@ -294,7 +275,6 @@ public class ControleurMediateur implements CollecteurEvenements {
 
         if ((enAttente == null) || enAttente.estVide()) {
             enAttente = joueurAutomatique.elaboreCoups();
->>>>>>> 936646ae4e4959a80329f2e2a03a8727b650247e
         }
 
         if ((enAttente == null) || enAttente.estVide()) {
