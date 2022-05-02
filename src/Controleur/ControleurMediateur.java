@@ -158,11 +158,9 @@ public class ControleurMediateur implements CollecteurEvenements {
         switch (commande) {
             case "j1":
                 jeu.init_joueurCourant(true);
-                utilisationIA();
-            break;
+                break;
             case "j2":
                 jeu.init_joueurCourant(false);
-                utilisationIA();
                 break;
             case "down":
                 modificationTailleGaufre(1, 0);
@@ -204,7 +202,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 interfaceGraphique.majNbCoup();
                 break;
             case "ia":
-                utilisationIA();
+                utilisationIA(commande);
                 break;
             case "save":
                 jeu.sauvegarder();
@@ -249,11 +247,13 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique = iGraphique;
     }
 
-    public void utilisationIA() {
+    public void utilisationIA(String nom_ia) {
         iAActive = true;
-        if (joueurAutomatique == null) {
-            joueurAutomatique = IA.nouvelle(jeu);
 
+        if (joueurAutomatique == null) {
+            
+            joueurAutomatique = IA.nouvelle(jeu, nom_ia);
+            
             if ((enAttente == null) || enAttente.estVide()) {
                 enAttente = joueurAutomatique.elaboreCoups();
             }

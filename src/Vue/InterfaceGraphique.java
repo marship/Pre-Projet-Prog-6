@@ -53,6 +53,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
         return bouton;
     }
 
+    private JComboBox<String> creerComboBox(String[] items) {
+        JComboBox<String> comboBox = new JComboBox<>(items);
+        comboBox.addActionListener(new AdaptateurCommande(collecteurEvenements, comboBox.getSelectedItem().toString()));
+        return comboBox;
+    }
+
     @Override
     public void run() {
         // Creation d'une fenetre
@@ -71,8 +77,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
         choix_adversaire.add(createLabel("Choisissez votre adversaire !"));
         choix_adversaire.add(Box.createGlue());
 
-        String[] deuxieme_joueur = {"Joueur 2", "IA Aleatoire", "IA Forte"};
-        JComboBox<String> adversaire = new JComboBox<>(deuxieme_joueur);
+        String[] deuxieme_joueur = {"Joueur 2", "IAAleatoire", "IAEtOu", "IAGP"};
+        JComboBox<String> adversaire = creerComboBox(deuxieme_joueur);
         adversaire.setBounds(80, 50, 140, 20);
         choix_adversaire.add(adversaire);
 
