@@ -30,7 +30,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
     
     // ========= JComponent ===========
     JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur, nbCoup, copyright;
-    JButton annuler, refaire, nouvellePartie, suite, save, load, histoire, joueur_un, joueur_deux;
+    JButton annuler, refaire, nouvellePartie, suite, save, load, histoire, joueur_un, joueur_deux, aide;
     public GaufreGraphique gaufreGraphique;
     JComboBox<Integer> listeEtapes;
 
@@ -202,6 +202,8 @@ public class InterfaceGraphique implements Runnable, Observateur {
         barreLaterale.add(sauvegardeCharge);
         barreLaterale.add(Box.createGlue());
 
+	aide = creerBouton("Aide", "aide");
+        barreLaterale.add(aide);
         nouvellePartie = creerBouton("Nouvelle Partie", "Nouvelle");
         barreLaterale.add(nouvellePartie);
         barreLaterale.add(Box.createGlue());
