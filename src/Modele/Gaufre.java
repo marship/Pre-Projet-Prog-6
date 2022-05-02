@@ -1,5 +1,8 @@
 package Modele;
 
+import Global.Configuration;
+import Structures.Sequence;
+
 public class Gaufre extends Historique<Coup> implements Cloneable {
 
     int nbLigneGaufre;
@@ -157,6 +160,28 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
     void ajoutHistorique(Coup coup) {
         coup.fixerGaufre(this);
         nouveau(coup);
+    }
+
+    public int tailleHistoire(){
+        int res = 0;
+        Sequence<Coup> liste = Configuration.instance().nouvelleSequence();
+        while( !passe.estVide() ){
+            liste.insereQueue(passe.extraitTete());
+            res++;
+        }
+        while( !liste.estVide() ){
+            passe.insereQueue(liste.extraitTete());
+        }
+        
+        liste = Configuration.instance().nouvelleSequence();
+        while( !futur.estVide() ){
+            liste.insereQueue(futur.extraitTete());
+            res++;
+        } 
+        while( !liste.estVide() ){
+            futur.insereQueue(liste.extraitTete());
+        }
+        return res;
     }
 
     // ================================

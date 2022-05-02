@@ -63,7 +63,8 @@ public class IAEtOu extends IA {
     public boolean calculJA(Gaufre gaufre){
         Coup coup;
         if(gaufre.estTermine()){
-            if(quiDoitGagner == 1){
+            int joueurCourant = gaufre.joueurCourant() ? 1 : 2;
+            if(quiDoitGagner == joueurCourant){
                 return true;
             }
             else{
@@ -80,10 +81,6 @@ public class IAEtOu extends IA {
                         coup = jeu.creerCoup(i, j);
                         Gaufre suite = gaufre.clone();
                         suite.jouerCoup(coup);
-                        if(hashTable.containsKey(suite.hash())){
-                            return false;
-                        }
-                        hashTable.put(suite.hash(), suite);
                         sortie = sortie || calculJB(suite);
                     }
                     j++;
@@ -98,7 +95,8 @@ public class IAEtOu extends IA {
     public boolean calculJB(Gaufre gaufre){
         Coup coup;
         if(gaufre.estTermine()){
-            if(quiDoitGagner == 2){
+            int joueurCourant = gaufre.joueurCourant() ? 1 : 2;
+            if(quiDoitGagner != joueurCourant){
                 return true;
             }
             else{
@@ -115,10 +113,6 @@ public class IAEtOu extends IA {
                         coup = jeu.creerCoup(i, j);
                         Gaufre suite = gaufre.clone();
                         suite.jouerCoup(coup);
-                        if(hashTable.containsKey(suite.hash())){
-                            return false;
-                        }
-                        hashTable.put(suite.hash(), suite);
                         sortie = sortie && calculJA(suite);
                     }
                     j++;
