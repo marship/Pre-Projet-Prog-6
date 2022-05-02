@@ -11,4 +11,5 @@ public interface GaufreGraphique {
     void tracerImage(ImageGaufre imageGaufre, int x, int y, int largeurCase, int hauteurCase);
     void tracerTrait(int x, int y, int largeurCase, int hauteurCase);
     void tracerRectangle(int joueurCourant, int coupX, int coupY, int largeurPreselection, int hauteurPreselection);
+    void tracerImageAide(int x, int y);
 }
