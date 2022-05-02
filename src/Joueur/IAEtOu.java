@@ -12,7 +12,7 @@ public class IAEtOu extends IA {
     
     Random random;
     int quiDoitGagner;
-    Hashtable<String, Gaufre> hashTable;
+    Hashtable<String, Boolean> hashTable;
 
     IAEtOu() {
         random = new Random();
@@ -109,7 +109,14 @@ public class IAEtOu extends IA {
                         coup = jeu.creerCoup(j, i);
                         Gaufre suite = gaufre.clone();
                         suite.jouerCoup(coup);
-                        sortie = sortie || calculJB(suite);
+                        
+                        if(hashTable.containsKey(suite.hash())){
+                            sortie = sortie || hashTable.get(suite.hash());
+                        }
+                        else{
+                            hashTable.put(suite.hash(), calculJB(suite));
+                            sortie = sortie || hashTable.get(suite.hash());
+                        }
                     }
                     j++;
                 }
@@ -135,13 +142,22 @@ public class IAEtOu extends IA {
             int i = 0;
             int j = 0;
             boolean sortie = true;
+            boolean verif = false;
             while(i < gaufre.lignes()){
                 while (j < gaufre.colonnes()){
                     if(gaufre.estCoupJouable(j, i)){
                         coup = jeu.creerCoup(j, i);
                         Gaufre suite = gaufre.clone();
                         suite.jouerCoup(coup);
-                        sortie = sortie && calculJA(suite);
+
+                        if(hashTable.containsKey(suite.hash())){
+                            sortie = sortie && hashTable.get(suite.hash());
+                        }
+                        else{
+                            hashTable.put(suite.hash(), calculJA(suite));
+                            sortie = sortie && hashTable.get(suite.hash());
+                        }
+
                     }
                     j++;
                 }
@@ -155,7 +171,7 @@ public class IAEtOu extends IA {
     @Override
 	public void initialise() {
 		Configuration.instance().logger().info("Demarrage de l'IA Et Ou !\n");
-        hashTable = new Hashtable<String, Gaufre>();
+        hashTable = new Hashtable<String, Boolean>();
 	}
 
     @Override
