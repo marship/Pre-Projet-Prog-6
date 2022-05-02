@@ -17,17 +17,16 @@ import Vue.InterfaceGraphique;
 
 public class ControleurMediateur implements CollecteurEvenements {
 
-    final static double TEMPS_ATTENTE_COUP_IA = 0.5;
-
     // ============ Jeu ===============
     InterfaceGraphique interfaceGraphique;
     Jeu jeu;
 
     // ============ IA ================
-    IA joueurAutomatique;
+    IA joueurAutomatique, aide;
     boolean iaActive = false;
-    Sequence<Coup> enAttente;
-
+    Sequence<Coup> enAttente, aideAttente;
+    final static double TEMPS_ATTENTE_COUP_IA = 0.5;
+    
     public ControleurMediateur(Jeu j) {
         jeu = j;
     }
@@ -55,9 +54,23 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
     }
 
+    private void gestionIA() {
+        if(iaActive){
+            attendreAvantJouer(TEMPS_ATTENTE_COUP_IA);
+            faireJouerIA();
+        }
+    }
+
+    private void miseAJourIHM() {
+        interfaceGraphique.majJoueurCourant();
+        jeu.nbCoupPlus();
+        interfaceGraphique.majNbCoup();
+    }
+
     // ============ Mouvement Souris ================
     @Override
     public void traqueSouris(int coupX, int coupY) {
+        
         if (jeu.estTermine()) {
             // Désactiver Prévisualisation
             gestionPrevisualisationCoup(coupX, coupY, true);
@@ -73,21 +86,6 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
     }
 
-    // TO DO
-    private void gestionIA() {
-        if(iaActive){
-            attendreAvantJouer(TEMPS_ATTENTE_COUP_IA);
-            faireJouerIA();
-        }
-    }
-
-    // TO DO
-    private void miseAJourIHM() {
-        interfaceGraphique.majJoueurCourant();
-        jeu.nbCoupPlus();
-        interfaceGraphique.majNbCoup();
-    }
-
     boolean estPositionSourisCorrect(int coupX, int coupY) {
         return (coupX <= jeu.gaufre().colonnes() * interfaceGraphique.gaufreGraphique.largeurCase()) && (coupY <= jeu.gaufre().lignes() * interfaceGraphique.gaufreGraphique.hauteurCase());
     }
@@ -100,15 +98,15 @@ public class ControleurMediateur implements CollecteurEvenements {
         }
     }
 
-    void gestionPrevisualisationCoup(int coupX, int coupY, boolean reinitialisation) {
+    void gestionPrevisualisationCoup(int coupX, int coupY, boolean reset) {
         int valeurLargeurPrevisualisation = 0;
         int valeurHauteurPrevisualisation = 0;
-        if (reinitialisation) {
-            coupX = 0;
-            coupY = 0;
-        } else {
+        if (!reset) {
             valeurLargeurPrevisualisation = jeu.gaufre().colonnes() - coupX;
             valeurHauteurPrevisualisation = jeu.gaufre().lignes() - coupY;
+        } else {
+            coupX = 0;
+            coupY = 0;
         }
         setPrevisualisationCoup(valeurLargeurPrevisualisation, valeurHauteurPrevisualisation, coupX, coupY);
         previsualisationCoup(coupX, coupY);
@@ -125,10 +123,6 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique.previsualisation(jeu.getJoueurCourant(), coupX, coupY, jeu.largeurPrevisualisation(), jeu.hauteurPrevisualisation());
     }
 
-
-
-
-    
     void manger(int coupX, int coupY) {
         Coup coup = jeu.creerCoup(coupX, coupY);
         if (coup != null) {
@@ -203,9 +197,11 @@ public class ControleurMediateur implements CollecteurEvenements {
                 System.exit(0);
                 break;
             case "annule":
+                jeu.gaufre().supprimerAide();
                 annule();
                 break;
             case "refaire":
+                jeu.gaufre().supprimerAide();
                 refaire();
                 break;
             case "fullscreen":
@@ -240,7 +236,13 @@ public class ControleurMediateur implements CollecteurEvenements {
                 interfaceGraphique.majNbCoup();
                 break;
             case "histoire":
+                jeu.gaufre().supprimerAide();
                 parcours();
+                break;
+            case "aide":
+                jeu.gaufre().supprimerAide();
+                utilisationIA(2);
+                break;
             default:
                 return false;
         }
@@ -279,32 +281,61 @@ public class ControleurMediateur implements CollecteurEvenements {
 
     private void faireJouerIA() {
         if (iaActive && !jeu.estTermine()) {
-            utilisationIA();
+            utilisationIA(1);
             interfaceGraphique.majJoueurCourant();
             jeu.nbCoupPlus();
             interfaceGraphique.majNbCoup();
         }
     }
 
-    public void utilisationIA() {
+    public void utilisationIA(int option) {
+
+        if(option == 1){
         
-        if (joueurAutomatique == null) {
-            joueurAutomatique = IA.nouvelle(jeu);
-            joueurAutomatique.activeIA();
-        }
+            if (joueurAutomatique == null) {
+                joueurAutomatique = IA.nouvelle(jeu);
+                joueurAutomatique.activeIA();
+            }
 
-        if ((enAttente == null) || enAttente.estVide()) {
-            enAttente = joueurAutomatique.elaboreCoups();
-        }
+            if ((enAttente == null) || enAttente.estVide()) {
+                enAttente = joueurAutomatique.elaboreCoups();
+            }
 
-        if ((enAttente == null) || enAttente.estVide()) {
-            Configuration.instance().logger().severe("Bug : l'IA n'a joue aucun coup");
-        } else {
-            jouerCoup(enAttente.extraitTete());
-        }
+            if ((enAttente == null) || enAttente.estVide()) {
+                Configuration.instance().logger().severe("Bug : l'IA n'a joue aucun coup");
+            } else {
+                jouerCoup(enAttente.extraitTete());
+            }
 
-        if (jeu.estTermine()) {
-            joueurAutomatique.finalise();
+            if (jeu.estTermine()) {
+                joueurAutomatique.finalise();
+            }
+        }
+        else{
+            aide = IA.nouvelle(jeu);
+            aide.activeIA();
+            if ((aideAttente == null) || aideAttente.estVide()) {
+                aideAttente = aide.elaboreCoups();
+            }
+
+            if ((aideAttente == null) || aideAttente.estVide()) {
+                Configuration.instance().logger().severe("Bug : l'IA n'a joue aucun coup");
+            } else {
+                Iterateur<Position> iterateur = aideAttente.extraitTete().positionBouchee.iterateur();
+                int coupX = 0, coupY = 0;
+                while (iterateur.aProchain()) {
+                    Position position = (Position) iterateur.prochain();
+                    coupX = position.positionX;
+                    coupY = position.positionY;
+                }
+                System.out.println("" + coupX + " " + coupY);
+                jeu.gaufre().grilleGaufre[coupY][coupX] = 4;
+                interfaceGraphique.frame.repaint();
+            }
+
+            if (jeu.estTermine()) {
+                aide.finalise();
+            }
         }
     }
 
