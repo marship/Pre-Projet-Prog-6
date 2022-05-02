@@ -29,6 +29,9 @@ public class IAAleatoire extends IA {
 
         coup = jeu.creerCoup(mangeX, mangeY);
         sortie.insereTete(coup);
+
+        System.out.println("Mange en (" + mangeX + ", " + mangeY +")");
+
         return sortie;
     }
 

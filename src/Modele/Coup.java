@@ -7,7 +7,7 @@ import Global.Configuration;
 
 public class Coup extends Commande {
 
-    Sequence<Position> positionBouchee;
+    public Sequence<Position> positionBouchee;
     Gaufre gaufre;
 
     Coup() {

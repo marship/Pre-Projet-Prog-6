@@ -2,8 +2,8 @@ package Modele;
 
 public class Position {
 
-    int positionX;
-    int positionY;
+    public int positionX;
+    public int positionY;
 
     Position(int posX, int posY) {
         positionX = posX;

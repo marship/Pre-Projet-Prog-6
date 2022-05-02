@@ -239,10 +239,10 @@ public class Jeu extends Observable {
             // On fait le fichier
             if (!f.isFile()){
                 f.createNewFile();
-                System.out.println("Fichier fait");
+                Configuration.instance().logger().info("Fichier Creer !");
             }
             else{
-                System.out.println("Sauvegarde existe déjà");
+                Configuration.instance().logger().info("Sauvegarde existe deja !");
             }
 
             FileWriter fw = new FileWriter(f);
@@ -280,6 +280,7 @@ public class Jeu extends Observable {
             coup = null;
             while( !liste.estVide() ){
                 coup = liste.extraitTete();
+                gaufre().passe.insereTete(coup);
                 Iterateur<Position> iterateur = coup.positionBouchee.iterateur();
                 while (iterateur.aProchain()) {
                     Position position = (Position) iterateur.prochain();
@@ -288,6 +289,7 @@ public class Jeu extends Observable {
                 }
             }
             bw.close();
+            Configuration.instance().logger().info("Fichier Sauvegarde !");
         }
         catch (Exception e) {
             System.err.println(e);
