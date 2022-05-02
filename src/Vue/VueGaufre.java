@@ -13,6 +13,7 @@ public class VueGaufre {
     ImageGaufre imageGaufre;
     ImageGaufre imageGaufrePoison;
     ImageGaufre imageSol;
+    ImageGaufre imageAide;
     GaufreGraphique gaufreGraphique;
     int largeurCase;
     int hauteurCase;
@@ -22,6 +23,7 @@ public class VueGaufre {
         imageSol = chargeImage("sol");
         imageGaufre = chargeImage("gaufre");
         imageGaufrePoison = chargeImage("gaufrePoison");
+        imageAide = chargeImage("gaufreAide");
         jeu = j;
         gaufreGraphique = gGraphique;
         gaufre = jeu.gaufre();
@@ -82,6 +84,9 @@ public class VueGaufre {
                     case 2:
                     case -1:
                         gaufreGraphique.tracerImage(imageSol, j * largeurCase, i * largeurCase, largeurCase, hauteurCase);
+                        break;
+                    case 4:
+                        gaufreGraphique.tracerImage(imageAide, j * largeurCase, i * largeurCase, largeurCase, hauteurCase);
                         break;
                 
                     default:
