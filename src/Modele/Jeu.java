@@ -316,6 +316,7 @@ public class Jeu extends Observable {
                 int y = Integer.parseInt(scan.nextLine());
                 Coup coup = creerCoup(x, y);
                 jouerCoup(coup);
+                nbCoup++;
             }
 
             // On met à jour tout ce qui doit être à jour
