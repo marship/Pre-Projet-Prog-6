@@ -172,15 +172,45 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique.majScore();
     }
 
+    void init_adversaire(){
+        String adversaire_choisi = interfaceGraphique.get_adversaire();
+        switch(adversaire_choisi){
+            case "Joueur2":
+                iaActive = false;
+                break;
+            case "IAAleatoire":
+                joueurAutomatique = IA.nouvelle(jeu, adversaire_choisi);
+                joueurAutomatique.activeIA();
+                iaActive = true;
+                break;
+            case "IAEtOu":
+                joueurAutomatique = IA.nouvelle(jeu, adversaire_choisi);
+                joueurAutomatique.activeIA();
+                iaActive = true;
+                break;
+            case "IAGP":
+                joueurAutomatique = IA.nouvelle(jeu, adversaire_choisi);
+                joueurAutomatique.activeIA();
+                iaActive = true;
+                break;
+            default :
+                joueurAutomatique = IA.nouvelle(jeu);
+                joueurAutomatique.activeIA();
+                iaActive = true;
+                break;
+        }
+    } 
+
     @Override
     public boolean commande(String commande) {
         switch (commande) {
-            case "j1":
-                jeu.init_joueurCourant(true);
-                break;
-            case "j2":
-                jeu.init_joueurCourant(false);
-                break;
+            case "commencer":
+                init_adversaire();
+                jeu.init_joueurCourant(interfaceGraphique.get_joueurCourant());
+                gestionMajTailleGaufre(0, 0);
+                interfaceGraphique.nouvelle();
+                interfaceGraphique.fermer_PopUp();
+                break; 
             case "down":
                 modificationTailleGaufre(1, 0);
                 break;
@@ -210,6 +240,7 @@ public class ControleurMediateur implements CollecteurEvenements {
             case "Nouvelle":
                 gestionMajTailleGaufre(0, 0);
                 interfaceGraphique.nouvelle();
+                interfaceGraphique.ouvrir_PopUp();
                 break;
             case "suite":
                 if(jeu.estTermine()) {

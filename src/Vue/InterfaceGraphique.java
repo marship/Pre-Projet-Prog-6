@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
+import javax.swing.ButtonGroup;
+import javax.swing.JRadioButton;
 
 import Global.Configuration;
 import Modele.Jeu;
@@ -30,9 +32,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
     
     // ========= JComponent ===========
     JLabel infoJoueurCourantCouleur, infoJoueurCourant, infoFin, scores, J1L, J2L, taille, infoJoueur, nbCoup, copyright;
-    JButton annuler, refaire, nouvellePartie, suite, save, load, histoire, joueur_un, joueur_deux, aide;
+    JButton annuler, refaire, nouvellePartie, suite, save, load, histoire, aide;
+    JRadioButton joueur_un, joueur_deux;
     public GaufreGraphique gaufreGraphique;
     JComboBox<Integer> listeEtapes;
+    JComboBox<String> choix_adversaire;
+    JDialog param_joueur;
 
     InterfaceGraphique(Jeu j, CollecteurEvenements cEvenements) {
         jeu = j;
@@ -102,34 +107,37 @@ public class InterfaceGraphique implements Runnable, Observateur {
         gaufreCredit.add(copyright);
         frame.add(gaufreCredit, BorderLayout.SOUTH);
 
-        // Création Pop up (choix de joueur au début de la partie)
-        JDialog player_settings = new JDialog(frame);
-        player_settings.setBounds(500, 300, 400, 300);
-
+        //Creation du pop up de choix de joueur au début de la partie
+        param_joueur = new JDialog(frame);
+        param_joueur.setBounds(500, 300, 400, 300);
+        param_joueur.setAlwaysOnTop(true);
+                 
         //choix du 2e joueur (joueur ou IA)
-        Box choix_adversaire = Box.createVerticalBox();
-        choix_adversaire.add(createLabel("Choisissez votre adversaire !", false));
-        choix_adversaire.add(Box.createGlue());
-
-        String[] deuxieme_joueur = {"Joueur 2", "IAAleatoire", "IAEtOu", "IAGP"};
-        JComboBox<String> adversaire = creerComboBox(deuxieme_joueur);
-        adversaire.setBounds(80, 50, 140, 20);
-        choix_adversaire.add(adversaire);
-
+        Box param_partie = Box.createVerticalBox();
+        param_partie.add(createLabel("Choisissez votre adversaire !", true));
+        param_partie.add(Box.createGlue());
+                 
+        String[] deuxieme_joueur = {"Joueur 2", "IA Aleatoire", "IA EtOu", "IA GP"};
+        choix_adversaire = creerComboBox(deuxieme_joueur);
+        param_partie.add(choix_adversaire);
+                 
         //choix joueur qui commence
-        Box choix_joueur = Box.createVerticalBox();
-        choix_joueur.add(createLabel("Qui commence ?", false));
-        choix_joueur.add(Box.createGlue());
-        Box bouton_choix_joueur = Box.createHorizontalBox();
-        joueur_un = creerBouton("joueur 1", "j1");
-        bouton_choix_joueur.add(joueur_un);
-        joueur_deux = creerBouton("joueur 2", "j2");
-        bouton_choix_joueur.add(joueur_deux);
-        choix_joueur.add(bouton_choix_joueur);
-
-        player_settings.add(choix_adversaire, BorderLayout.NORTH);
-        player_settings.add(choix_joueur, BorderLayout.SOUTH);
-        player_settings.setVisible(true);
+        param_partie.add(createLabel("Qui commence ?", true));
+        Box choix_joueur = Box.createHorizontalBox();
+        ButtonGroup groupe_bouton = new ButtonGroup();  
+        joueur_un = new JRadioButton("joueur 1", true);
+        joueur_deux = new JRadioButton("joueur 2");
+        groupe_bouton.add(joueur_un);
+        groupe_bouton.add(joueur_deux);
+        choix_joueur.add(joueur_un);
+        choix_joueur.add(joueur_deux);
+        param_partie.add(choix_joueur);
+        choix_adversaire.getSelectedItem();
+        JButton commencer = creerBouton("Commencer", "commencer");
+        param_partie.add(commencer);
+                 
+        param_joueur.add(param_partie, BorderLayout.NORTH);
+        ouvrir_PopUp();
 
         // Ajout de notre composant de dessin dans la fenetre
         gaufreGraphique = new GaufreGraphiqueSwing(jeu);
@@ -346,6 +354,23 @@ public class InterfaceGraphique implements Runnable, Observateur {
         infoJoueurCourantCouleur.setText("Joueur " + jeu.getJoueurCourant());
         afficherMasquerInfoJoueur(0, true);
     }
+    public void ouvrir_PopUp(){
+        frame.setEnabled(false);
+        param_joueur.setVisible(true);
+    }
+    public void fermer_PopUp(){
+        frame.setEnabled(true);
+        param_joueur.dispose();
+    }
+
+    public boolean get_joueurCourant() {
+        return joueur_un.isSelected();
+    }
+
+    public String get_adversaire() {
+        String adversaire = choix_adversaire.getSelectedItem().toString();
+        return adversaire.replaceAll(" ", "");
+    } 
 
     public void basculePleinEcran() {
 		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();

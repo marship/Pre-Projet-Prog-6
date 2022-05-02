@@ -24,7 +24,6 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
     void initialisation(int ligne, int colonne) {
         nbLigneGaufre = ligne;
         nbColonnesGaufre = colonne;
-        joueurCourant = true;
         grilleGaufre = new int[nbLigneGaufre][nbColonnesGaufre];
 
         for (int i = 0; i < lignes(); i++) {
