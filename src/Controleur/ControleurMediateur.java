@@ -231,6 +231,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 interfaceGraphique.majTexteTailleGaufre();
                 interfaceGraphique.majScore();
                 interfaceGraphique.majJoueurCourant();
+                interfaceGraphique.majNbCoup();
                 break;
             case "histoire":
                 parcours();
