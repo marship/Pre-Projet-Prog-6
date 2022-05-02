@@ -6,7 +6,8 @@ import Structures.Sequence;
 
 public class Historique <E extends Commande>{
     
-    Sequence<E> passe, futur;
+    public Sequence<E> passe;
+    public Sequence<E> futur;
 
     Historique() {
         passe = Configuration.instance().nouvelleSequence();
