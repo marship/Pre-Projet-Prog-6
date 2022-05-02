@@ -14,6 +14,7 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
     // -1 : Morceau de gaufre déjà mangé
     //  2 : Morceau de gaufre empoisonné mangé
     //  3 : Morceau de gaufre sélectionné
+    //  4 : Morceau de gaufre pour aider
     public int[][] grilleGaufre;
     
     public Gaufre(int ligne, int colonne) {
@@ -39,7 +40,7 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
     }
 
     public boolean estCoupJouable(int coupX, int coupY) {
-        return ((grilleGaufre[coupY][coupX] == 0) || (grilleGaufre[coupY][coupX] == 1));
+        return ((grilleGaufre[coupY][coupX] == 0) || (grilleGaufre[coupY][coupX] == 1) || (grilleGaufre[coupY][coupX] == 4));
     }
     
     public Coup creerCoup(int coupX, int coupY) {
@@ -57,6 +58,16 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
         nouveau(coup);
     }
 
+    public void supprimerAide(){
+        for (int i = 0; i < lignes(); i++) {
+            for (int j = 0; j < colonnes(); j++) {
+                if(grilleGaufre[i][j] == 4){
+                    grilleGaufre[i][j] = 0;
+                }
+            }
+        }
+    }
+
     public void jouerCoupGaufre(int positionX, int positionY) {
         ajoutPrevisualisation(positionX, positionY);
         if(grilleGaufre[positionY][positionX] == 1) {
@@ -64,6 +75,7 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
         } else {
             grilleGaufre[positionY][positionX] = 3;
         }
+        supprimerAide();
         changerJoueur();
     }
 
@@ -98,7 +110,7 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
     private void ajoutPrevisualisation(int positionX, int positionY) {
         for (int i = positionY; i < grilleGaufre.length; i++) {
             for (int j = positionX; (j < grilleGaufre[i].length) && (grilleGaufre[i][j] != -1); j++) {
-                if(grilleGaufre[i][j] == 0) {
+                if(grilleGaufre[i][j] == 0 || grilleGaufre[i][j] == 4) {
                     grilleGaufre[i][j] = -1;
                 }
             }
@@ -117,7 +129,7 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
         boolean estAuDebut = true;
         for (int i = 0; i < grilleGaufre.length; i++) {
             for (int j = 0; j < grilleGaufre[i].length; j++) {
-                if((grilleGaufre[i][j] != 0) && (grilleGaufre[i][j] != 1)) {
+                if((grilleGaufre[i][j] != 0) && (grilleGaufre[i][j] != 1) && (grilleGaufre[i][j] != 4)) {
                     estAuDebut = false;
                     return estAuDebut;
                 }
@@ -131,6 +143,9 @@ public class Gaufre extends Historique<Coup> implements Cloneable {
     }
 
     public boolean estTermine() {
+        if(grilleGaufre[0][0] == 4){
+            return false;
+        }
         return grilleGaufre[0][0] != 1;
     }
 
