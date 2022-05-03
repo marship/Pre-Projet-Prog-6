@@ -45,6 +45,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 } else {
                     manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
                     miseAJourIHM();
+                    // TO DO Cas IA Premier
                     gestionIA();
                 }
             } else {
@@ -62,7 +63,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     private void miseAJourIHM() {
-        interfaceGraphique.miseAJourCouleurJoueurCourant(0, true);
+        interfaceGraphique.miseAJourCouleurJoueurCourant(0, 0, false);
         jeu.nbCoupPlus();
         interfaceGraphique.miseAJourNbCoup();
     }
@@ -131,7 +132,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 jeu.afficherJoueurGagnant();
             } else if (!jeu.estCoupJouable(coupX, coupY)) {
                 interfaceGraphique.majInfoPartie();
-                interfaceGraphique.miseAJourCouleurJoueurCourant(2, true);
+                interfaceGraphique.miseAJourCouleurJoueurCourant(2, 2, true);
             }
             jouerCoup(coup);
             jeu.verificationJoueurGagnant();
@@ -145,7 +146,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     void annule() {
         jeu.annule();
         interfaceGraphique.miseAJourTableauScore();
-        interfaceGraphique.miseAJourCouleurJoueurCourant(1, true);
+        interfaceGraphique.miseAJourCouleurJoueurCourant(1, 0, false);
         jeu.nbCoupMoins();
         interfaceGraphique.miseAJourNbCoup();
     }
@@ -263,7 +264,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 charge();
                 interfaceGraphique.miseAJourInfoTailleGaufre();
                 interfaceGraphique.miseAJourTableauScore();
-                interfaceGraphique.miseAJourCouleurJoueurCourant(0, true);
+                interfaceGraphique.miseAJourCouleurJoueurCourant(0, 0, false);
                 interfaceGraphique.miseAJourNbCoup();
                 break;
             case "histoire":
@@ -281,7 +282,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     }
 
     private void parcours() {
-        int destination = interfaceGraphique.destination();
+        int destination = interfaceGraphique.destinationNavigationHistorique();
         int depart = jeu.nbCoup();
         if(destination < depart){
             while(depart != destination){
@@ -313,7 +314,7 @@ public class ControleurMediateur implements CollecteurEvenements {
     private void faireJouerIA() {
         if (iaActive && !jeu.estTermine()) {
             utilisationIA(1);
-            interfaceGraphique.miseAJourCouleurJoueurCourant(0, true);
+            interfaceGraphique.miseAJourCouleurJoueurCourant(0, 0, false);
             jeu.nbCoupPlus();
             interfaceGraphique.miseAJourNbCoup();
         }

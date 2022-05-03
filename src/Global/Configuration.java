@@ -74,7 +74,7 @@ public class Configuration {
     public Logger logger() {
 		if (logger == null) {
 			System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s : %5$s%n");
-			logger = Logger.getLogger("Sokoban.Logger");
+			logger = Logger.getLogger("Gaufre.Logger");
             logger.setLevel(Level.parse(lis("LogLevel")));
 		}
 		return logger;

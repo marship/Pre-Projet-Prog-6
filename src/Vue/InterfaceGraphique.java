@@ -56,6 +56,38 @@ public class InterfaceGraphique implements Runnable, Observateur {
         SwingUtilities.invokeLater(new InterfaceGraphique(j, cEvenements));
     }
 
+    // ================================
+    // =========== Pop Up =============
+    // ================================
+
+    public boolean get_joueurCourant() {
+        if(joueur_un.isSelected()){
+            return true;
+        }
+        if(joueur_deux.isSelected()){
+            return false;
+        }
+        return true;
+    }
+
+    public String get_adversaire() {
+        String adversaire = choix_adversaire.getSelectedItem().toString();
+        return adversaire.replaceAll(" ", "");
+    } 
+
+    public void ouvrir_PopUp() {
+        param_joueur.setVisible(true);
+        frame.setEnabled(false);
+    }
+
+    public void fermer_PopUp() {
+        param_joueur.dispose();
+    }
+
+    // ================================
+    // =========== Fenêtre ============
+    // ================================
+
     @Override
     public void run() {
         // Creation de la fenêtre
@@ -65,11 +97,11 @@ public class InterfaceGraphique implements Runnable, Observateur {
         // =========== Pop Up =============
         // ================================
 
-        // TO DO
-
         // Création Pop up (Choix joueur qui débute)
         param_joueur = new JDialog(frame);
         param_joueur.setBounds(500, 300, 400, 300);
+        param_joueur.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        param_joueur.addWindowListener(new AdaptateurFenetre(this));
         param_joueur.setAlwaysOnTop(true);
         
         //choix du 2e joueur (joueur ou IA)
@@ -77,8 +109,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         param_partie.add(createLabel("Choisissez votre adversaire !", true));
         param_partie.add(Box.createGlue());
 
-        String[] deuxieme_joueur = {"Joueur 2", "IA Aleatoire", "IA EtOu", "IA GP"};
-        choix_adversaire = creerComboBox(deuxieme_joueur);
+        choix_adversaire = creerComboBoxPopUp();
         param_partie.add(choix_adversaire);
 
         //choix joueur qui commence
@@ -97,7 +128,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         param_partie.add(commencer);
 
         param_joueur.add(param_partie, BorderLayout.NORTH);
-        param_joueur.setVisible(true);
+        ouvrir_PopUp();
 
         // ================================
         // ====== Création Eléments =======
@@ -212,32 +243,20 @@ public class InterfaceGraphique implements Runnable, Observateur {
     }
 
     // TO DO
-    private void initialisationAffichage() {
-        miseAJourCouleurJoueurCourant(0, true);
-        afficherMasquerInfoJoueur(0, false);
-    }
-
-    // TO DO
-    public int destination(){
-        return (int) listeEtapes.getSelectedItem();
-    }
-
-    // TO DO
     @Override
     public void majInfoPartie() {
         afficherMasquerInfoJoueur(0, false);
         if (jeu.estTermine()) {
             etatPartie.setText("Fin de partie !");
-            miseAJourCouleurJoueurCourant(3, true);
+            miseAJourCouleurJoueurCourant(3, 3, true);
             incrementerScore();
             miseAJourTableauScore();
             abandonMancheSuivante.setText("Manche Suivante");
         } else {
-            miseAJourCouleurJoueurCourant(1, true);
+            miseAJourCouleurJoueurCourant(1, 0, false);
             abandonMancheSuivante.setText("Abandon");
             etatPartie.setText(" Partie en cours ... ");
         }
-        miseAJourCouleurJoueurCourant(0, true);
         annuler.setEnabled(jeu.gaufre().peutAnnuler());
         refaire.setEnabled(jeu.gaufre().peutRefaire());
         ((Component) gaufreGraphique).repaint();
@@ -289,12 +308,21 @@ public class InterfaceGraphique implements Runnable, Observateur {
         miseAJourNbCoup();
     }
 
+    public int destinationNavigationHistorique() {
+        return (int) listeEtapes.getSelectedItem();
+    }
+
     // ================================
     // ===== MàJ Info Menu Droit ======
     // ================================
 
     public void miseAJourInfoTailleGaufre() {
         taille.setText("Lignes : " + jeu.lignes() + "    Colonnes : " + jeu.colonnes());
+    }
+
+    private void initialisationAffichage() {
+        miseAJourCouleurJoueurCourant(0, 0, false);
+        afficherMasquerInfoJoueur(0, false);
     }
 
     public void miseAJourNbCoup() {
@@ -318,6 +346,10 @@ public class InterfaceGraphique implements Runnable, Observateur {
                 // Morceau deja mange
                 information.setText("Morceau deja mange !");
                 break;
+            case 3:
+                // Fin partie
+                information.setText("Partie terminee !");
+                break;
             default:
                 // Option inconu
                 Configuration.instance().logger().info("Option pour 'afficherMasquerInfoJoueur' inconu !\n");
@@ -327,7 +359,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
         frame.repaint();
     }
 
-    public void miseAJourCouleurJoueurCourant(int option, boolean estVisible) {
+    public void miseAJourCouleurJoueurCourant(int option, int optionAfficherMasquerInfoJoueur, boolean estVisibleAfficherMasquerInfoJoueur) {
         switch (option) {
             case -1:
                 // Changer visibilité uniquement
@@ -359,8 +391,7 @@ public class InterfaceGraphique implements Runnable, Observateur {
                 Configuration.instance().logger().info("Option pour 'miseAJourCouleurJoueurCourant' inconu !\n");
                 break;
         }
-        afficherMasquerInfoJoueur(0, estVisible);
-        frame.repaint(); // TO DO
+        afficherMasquerInfoJoueur(optionAfficherMasquerInfoJoueur, estVisibleAfficherMasquerInfoJoueur);
     }
 
     // ================================
@@ -415,8 +446,12 @@ public class InterfaceGraphique implements Runnable, Observateur {
     }
 
     // Création JComboBox<String>
-    private JComboBox<String> creerComboBox(String[] elements) {
+    private JComboBox<String> creerComboBoxPopUp() {
         JComboBox<String> comboBox = new JComboBox<>();
+        comboBox.addItem("Joueur 2");
+        comboBox.addItem("IA Aleatoire");
+        comboBox.addItem("IA EtOu");
+        comboBox.addItem("IA GP");
         comboBox.addActionListener(new AdaptateurCommande(collecteurEvenements, comboBox.getSelectedItem().toString()));
         comboBox.setFocusable(false);
         return comboBox;
