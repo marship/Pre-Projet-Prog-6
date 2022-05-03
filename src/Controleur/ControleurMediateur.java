@@ -1,7 +1,13 @@
 package Controleur;
 
 import java.io.File;
+import java.io.IOException;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -37,11 +43,13 @@ public class ControleurMediateur implements CollecteurEvenements {
         if (jeu.estTermine()) {
             interfaceGraphique.afficherMasquerInfoJoueur(0, false);
             Configuration.instance().logger().info("Fin de partie !\n");
+            chargeAudio("gg");
         } else {
             if (estPositionSourisCorrect(coupX, coupY)) {
                 if (jeu.estDejaMangee(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false))) {
                     interfaceGraphique.afficherMasquerInfoJoueur(2, true);
                     Configuration.instance().logger().info("Morceau deja mange !\n");
+                    chargeAudio("grosse");
                 } else {
                     manger(conversionCoordonneeVersCases(coupX, true), conversionCoordonneeVersCases(coupY, false));
                     miseAJourIHM();
@@ -51,6 +59,7 @@ public class ControleurMediateur implements CollecteurEvenements {
             } else {
                 interfaceGraphique.afficherMasquerInfoJoueur(1, true);
                 Configuration.instance().logger().info("Coup hors gaufre !\n");
+                chargeAudio("pol");
             }
         }
     }
@@ -173,6 +182,29 @@ public class ControleurMediateur implements CollecteurEvenements {
         interfaceGraphique.miseAJourTableauScore();
     }
 
+    // SON !!!!
+    private void chargeAudio(String nomAudio) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(Configuration.charge("Audio" + File.separator + nomAudio + ".wav"));
+            
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+
+            clip.start();
+            
+        } catch (UnsupportedAudioFileException e) {
+            Configuration.instance().logger().info("Fichier audio non supporte : " + e + "\n");
+            e.printStackTrace();
+        } catch (IOException e) {
+            Configuration.instance().logger().info("Erreur chargement fichier audio : " + e + "\n");
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            Configuration.instance().logger().info("Erreur ligne de lecture du fichier audio : " + e + "\n");
+            e.printStackTrace();
+        }
+        
+    }
+
     void init_adversaire(){
         String adversaire_choisi = interfaceGraphique.get_adversaire();
         switch(adversaire_choisi){
@@ -211,6 +243,7 @@ public class ControleurMediateur implements CollecteurEvenements {
                 gestionMajTailleGaufre(0, 0);
                 interfaceGraphique.nouvellePartie();
                 interfaceGraphique.fermer_PopUp();
+                chargeAudio("wiiSports");
                 break; 
             case "down":
                 modificationTailleGaufre(1, 0);
